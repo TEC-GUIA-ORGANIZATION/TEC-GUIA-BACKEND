@@ -1,1 +1,0 @@
-# TEC-GUIA-BACKEND
