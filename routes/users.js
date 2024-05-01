@@ -2,7 +2,7 @@ const express = require('express')
 const {
   getUsuarios, 
   getUsuario, 
-  createUsuario, 
+  addUsuario, 
   deleteUsuario, 
   updateUsuario
 } = require('../controllers/usuarioController')
@@ -16,7 +16,7 @@ router.get('/', getUsuarios)
 router.get('/:id', getUsuario)
 
 // POST a new Usuario
-router.post('/', createUsuario)
+router.post('/', addUsuario)
 
 // DELETE a Usuario
 router.delete('/:id', deleteUsuario)

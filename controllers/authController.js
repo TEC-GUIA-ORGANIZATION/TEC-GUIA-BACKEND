@@ -1,28 +1,46 @@
-const Usuario = require("../models/usuarioModelo");
+const Usuario = require("../models/usuarioModel.js");
 const bcrypt = require("bcryptjs")
 const {createAccessToken} = require("../libs/jwt")
 const jwt = require("jsonwebtoken");
+const ProfesorGuia = require("../models/profesorGuiaModel.js");
+const AsistenteAdministrador = require("../models/asistenteAdministradorModel.js");
 require('dotenv').config();
 
 const register = async (req, res) => {
     try {
-        const { correo, contrsena, nombre, primerApillido, segundoApellido, fotografia, rol} = req.body;
-    
+        const { 
+            correo, 
+            contrasena, 
+            nombre,
+            primerApellido,
+            segundoApellido,
+            sede,
+            fotografia,
+            rol,
+        } = req.body;
+        
         const userFound = await Usuario.findOne({ correo });
-    
         if (userFound)
             return res.status(400).json({
             message: ["The email is already in use"],
             });
-    
-        // hashing the password
-        const passwordHash = await bcrypt.hash(password, 10);
-    
+
+         // hashing the password
+        const passwordHash = await bcrypt.hash(contrasena, 10);
+        // id of the rol info 
+        const idInfo = 'null';
         // creating the user
         const newUsuario = new Usuario({
-            correo, contrsena: passwordHash, nombre, primerApillido, segundoApellido, fotografia, rol
+            correo, contrasena: passwordHash, nombre, primerApellido, segundoApellido, sede, fotografia, rol, idInfo
         });
-    
+
+
+        if (rol === 'admin') {
+            newUsuario.adminInfo =  createAdmin(req);
+        } else if (rol === 'profesor Guia') {
+            newUsuario = createProfesorGuia(req);
+        }
+     
         // saving the user in the database
         const usuarioSaved = await newUsuario.save();
     
@@ -35,13 +53,46 @@ const register = async (req, res) => {
     
         res.json({
             id: usuarioSaved._id,
-            email: usuarioSaved.email,
+            email: usuarioSaved.correo,
 
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
+//helper functions for adding the info of user being registered based on its rol 
+
+async function createAdmin(req) {
+    try{
+        const { esPrincipal } = req.body;
+        const newAdminInfo = new AsistenteAdministrador({ esPrincipal });
+        const adminInfoSaved = await newAdminInfo.save();
+        return adminInfoSaved._id;
+    }catch (error) {
+        res.status(500).json({})
+    }
+}
+
+async function createProfesorGuia(req) {
+    try {
+        const { codigo, telefonoOficina, telefonoPersonal, esCoordinador, estaActivo } = req.body;
+        const newProfesorGuiaInfo = new ProfesorGuia({
+            codigo,
+            telefonoOficina,
+            telefonoPersonal,
+            esCoordinador,
+            estaActivo
+        });
+        const profesorGuiaSaved = await newProfesorGuiaInfo.save();
+        return profesorGuiaSaved._id;
+    }catch (error) {
+        res.status(500).json({})
+    }
+}
+
+
+
 
 
 const verifyToken = async (req, res) => {
@@ -56,7 +107,7 @@ const verifyToken = async (req, res) => {
 
     return res.json({
         id: userFound._id,
-        email: userFound.crreo,
+        email: userFound.correo,
         rol: userFound.rol,
         nombre: userFound.nombre,
         primerApellido: userFound.primerApellido,
@@ -75,7 +126,7 @@ const login = async (req,res)=>{
             message: ["The email does not exist"],
             });
     
-        const isMatch = await bcrypt.compare(contraseña, userFound.contraseña);
+        const isMatch = await bcrypt.compare(contraseña, userFound.contrasena);
         if (!isMatch) {
             return res.status(400).json({
             message: ["The password is incorrect"],

@@ -11,5 +11,5 @@ const  asistenteAdministradorSchema = new Schema({
 })
 
 
-const asistenteAdministrador = mongoose.model('asistenteAdministrador', asistenteAdministradorSchema);
-module.exports = asistenteAdministrador;
+const AsistenteAdministrador = mongoose.model('asistenteAdministrador', asistenteAdministradorSchema);
+module.exports = AsistenteAdministrador;

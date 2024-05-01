@@ -37,6 +37,7 @@ const usuarioSchema = new Schema({
     },
     rol: {
         type: String,
+        enum: ['admin', 'profesorGuia'],
         required: true
     },
     adminInfo: {

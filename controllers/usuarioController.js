@@ -1,9 +1,8 @@
 const Usuario = require('../models/usuarioModel.js')
 const mongoose = require('mongoose')
-const usuarioDao = require('../dao/userDao.ts')
 
 // get all Usuarios
-const geUsuarios = async (req, res) => {
+const getUsuarios = async (req, res) => {
   const usuarios = await Usuario.find({}).sort({createdAt: -1})
   res.status(200).json(usuarios)
 } 
@@ -79,7 +78,7 @@ const updateUsuario = async (req, res) => {
 module.exports = {
   getUsuarios,
   getUsuario,
-  createUsuario,
+  addUsuario,
   deleteUsuario,
   updateUsuario
 }
