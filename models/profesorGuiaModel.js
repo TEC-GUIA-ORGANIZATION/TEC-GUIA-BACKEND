@@ -10,7 +10,7 @@ const profesorGuiaSchema = new Schema({
         type: String,
         required: true
     },
-    telegonoOficina: {
+    telefonoOficina: {
         type: String,
         required: true,
         unique: true
