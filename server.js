@@ -22,9 +22,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
+
+const allowedOrigins = ["http://localhost:4200", "https://frontend-tec-guia.azurewebsites.net/"];
+
 app.use(cors({
-    credentials: true,
-    origin: "http://localhost:8080"
+  origin: function (origin, callback) {
+    // Check if the origin is in the list of allowed origins or if it is undefined (allowing requests from non-browser clients)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 app.use((req, res, next) => {

@@ -1,6 +1,4 @@
 const jwt = require("jsonwebtoken");
-import * as dotenv from 'dotenv';
-dotenv.config();
 
 function createAccessToken(payload) {
     return new Promise((resolve, reject) => {
