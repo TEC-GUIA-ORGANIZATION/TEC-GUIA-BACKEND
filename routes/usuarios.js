@@ -16,12 +16,12 @@ router.get('/', getUsuarios)
 router.get('/:id', getUsuario)
 
 // POST a new Usuario
-router.post('/', addUsuario)
+router.post('/add', addUsuario)
 
 // DELETE a Usuario
-router.delete('/:id', deleteUsuario)
+router.delete('/delete/:id', deleteUsuario)
 
 // UPDATE a Usuario
-router.patch('/:id', updateUsuario)
+router.patch('/update/:id', updateUsuario)
 
 module.exports = router

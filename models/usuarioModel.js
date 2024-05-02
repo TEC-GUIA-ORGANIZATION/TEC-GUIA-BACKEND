@@ -1,8 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const AsistenteAdminsitrador = require('./asistenteAdministradorModel.js')
-
 const usuarioSchema = new Schema({
     correo: {
         type: String,
@@ -51,9 +49,6 @@ const usuarioSchema = new Schema({
         required:false
     }
 })
-
-
-
 
 
 const Usuario = mongoose.model('Usuario', usuarioSchema);

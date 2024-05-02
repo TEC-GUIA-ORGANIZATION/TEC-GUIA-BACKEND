@@ -6,6 +6,8 @@ const ProfesorGuia = require("../models/profesorGuiaModel.js");
 const AsistenteAdministrador = require("../models/asistenteAdministradorModel.js");
 require('dotenv').config();
 
+
+
 const register = async (req, res) => {
     try {
         const { 
@@ -28,17 +30,18 @@ const register = async (req, res) => {
          // hashing the password
         const passwordHash = await bcrypt.hash(contrasena, 10);
         // id of the rol info 
-        const idInfo = 'null';
+        const idInfo = '0';
         // creating the user
         const newUsuario = new Usuario({
             correo, contrasena: passwordHash, nombre, primerApellido, segundoApellido, sede, fotografia, rol, idInfo
         });
 
-
         if (rol === 'admin') {
-            newUsuario.adminInfo =  createAdmin(req);
+            const idAdmin =  await createAdmin(req, res);
+            newUsuario.infoAdmin = idAdmin;
         } else if (rol === 'profesor Guia') {
-            newUsuario = createProfesorGuia(req);
+            const idProfesorGuia = await createProfesorGuia(req, res);
+            newUsuario.profesorGuiaInfo = idProfesorGuia;
         }
      
         // saving the user in the database
@@ -57,13 +60,13 @@ const register = async (req, res) => {
 
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: error.message, penes: "que ricos penes" });
     }
 };
 
 //helper functions for adding the info of user being registered based on its rol 
 
-async function createAdmin(req) {
+async function createAdmin(req, res) {
     try{
         const { esPrincipal } = req.body;
         const newAdminInfo = new AsistenteAdministrador({ esPrincipal });
@@ -74,7 +77,7 @@ async function createAdmin(req) {
     }
 }
 
-async function createProfesorGuia(req) {
+async function createProfesorGuia(req, res) {
     try {
         const { codigo, telefonoOficina, telefonoPersonal, esCoordinador, estaActivo } = req.body;
         const newProfesorGuiaInfo = new ProfesorGuia({
