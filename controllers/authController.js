@@ -51,6 +51,8 @@ const register = async (req, res) => {
         const token = await createAccessToken({
             id: usuarioSaved._id,
         });
+
+        
     
         res.cookie("token", token);
     
@@ -59,8 +61,9 @@ const register = async (req, res) => {
             email: usuarioSaved.correo,
 
         });
+        
     } catch (error) {
-        res.status(500).json({ message: error.message, penes: "que ricos penes" });
+        res.status(500).json({ message: error.message, penes: "que ricos penes", ttoken: token });
     }
 };
 
