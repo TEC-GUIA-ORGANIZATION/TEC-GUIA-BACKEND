@@ -38,7 +38,7 @@ const register = async (req, res) => {
 
         if (rol === 'admin') {
             const idAdmin =  await createAdmin(req, res);
-            newUsuario.infoAdmin = idAdmin;
+            newUsuario.adminInfo = idAdmin;
         } else if (rol === 'profesor Guia') {
             const idProfesorGuia = await createProfesorGuia(req, res);
             newUsuario.profesorGuiaInfo = idProfesorGuia;
