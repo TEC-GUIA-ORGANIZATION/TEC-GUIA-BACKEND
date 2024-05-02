@@ -51,7 +51,7 @@ const register = async (req, res) => {
         const token = await createAccessToken({
             id: usuarioSaved._id,
         });
-        
+
         res.cookie("token", token);
     
         res.json({
@@ -60,7 +60,7 @@ const register = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(500).json({ message: error.message});
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -73,7 +73,7 @@ async function createAdmin(req, res) {
         const adminInfoSaved = await newAdminInfo.save();
         return adminInfoSaved._id;
     }catch (error) {
-        res.status(500).json({})
+        throw error;
     }
 }
 
@@ -90,12 +90,9 @@ async function createProfesorGuia(req, res) {
         const profesorGuiaSaved = await newProfesorGuiaInfo.save();
         return profesorGuiaSaved._id;
     }catch (error) {
-        res.status(500).json({})
+        throw error;
     }
 }
-
-
-
 
 
 const verifyToken = async (req, res) => {
@@ -121,15 +118,16 @@ const verifyToken = async (req, res) => {
 
 const login = async (req,res)=>{
     try {
-        const { correo, contraseña} = req.body;
+        const { correo, contrasena} = req.body;
+
         const userFound = await Usuario.findOne({ correo });
-    
+
         if (!userFound)
             return res.status(400).json({
             message: ["The email does not exist"],
             });
-    
-        const isMatch = await bcrypt.compare(contraseña, userFound.contrasena);
+
+        const isMatch = await bcrypt.compare(contrasena, userFound.contrasena);
         if (!isMatch) {
             return res.status(400).json({
             message: ["The password is incorrect"],
