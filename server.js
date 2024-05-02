@@ -3,8 +3,9 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 const workoutRoutes = require('./routes/workouts')
-const usuarioRoutes = require('./routes/users.js')
+const usuarioRoutes = require('./routes/usuarios.js')
 const authRoutes = require('./routes/auth.js')
+const actividadRoutes = require('./routes/actividad.js')
 
 
 const cookieParser = require("cookie-parser")
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 app.use('/api/workouts', workoutRoutes)
 app.use('/api/usuarios', usuarioRoutes)
 app.use('/api/auth', authRoutes)
+app.use('/api/actividades', actividadRoutes)
 
 
 
