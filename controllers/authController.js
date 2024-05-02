@@ -52,18 +52,15 @@ const register = async (req, res) => {
             id: usuarioSaved._id,
         });
 
-        
-    
         res.cookie("token", token);
     
         res.json({
             id: usuarioSaved._id,
             email: usuarioSaved.correo,
-
         });
-        
+
     } catch (error) {
-        res.status(500).json({ message: error.message, penes: "que ricos penes", ttoken: token });
+        res.status(500).json({ message: error.message});
     }
 };
 
