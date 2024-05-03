@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 app.use(cookieParser());
+app.use(cors());
 
 app.use(cors({
   origin: ['http://localhost:8080', 'https://frontend-tec-guia.azurewebsites.net'],
