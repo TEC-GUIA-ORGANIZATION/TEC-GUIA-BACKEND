@@ -6,8 +6,6 @@ const ProfesorGuia = require("../models/profesorGuiaModel.js");
 const AsistenteAdministrador = require("../models/asistenteAdministradorModel.js");
 require('dotenv').config();
 
-
-
 const register = async (req, res) => {
     try {
         const { 
@@ -20,14 +18,14 @@ const register = async (req, res) => {
             fotografia,
             rol,
         } = req.body;
-        
+
         const userFound = await Usuario.findOne({ correo });
         if (userFound)
             return res.status(400).json({
-            message: ["The email is already in use"],
+                message: ["The email is already in use"],
             });
 
-         // hashing the password
+        // hashing the password
         const passwordHash = await bcrypt.hash(contrasena, 10);
         // id of the rol info 
         const idInfo = '0';
@@ -43,26 +41,18 @@ const register = async (req, res) => {
             const idProfesorGuia = await createProfesorGuia(req, res);
             newUsuario.profesorGuiaInfo = idProfesorGuia;
         }
-     
+
         // saving the user in the database
         const usuarioSaved = await newUsuario.save();
-    
+
         // create access token
         const token = await createAccessToken({
             id: usuarioSaved._id,
         });
 
-        res.json({
-            theToken: token
-        })
-
-        res.cookie("token", token);
-    
-        //res.json({
-            //id: usuarioSaved._id,
-            //email: usuarioSaved.correo,
-        //});
-
+        return res.json({
+            token,
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
@@ -100,23 +90,16 @@ async function createProfesorGuia(req, res) {
 
 
 const verifyToken = async (req, res) => {
-    const { token } = req.cookies;
+    const { token } = req.body;
     if (!token) return res.send(false);
 
     jwt.verify(token, process.env.TOKEN_SECRET, async (error, user) => {
         if (error) return res.sendStatus(401);
 
-    const userFound = await Usuario.findById(user.id);
-    if (!userFound) return res.sendStatus(401);
+        const userFound = await Usuario.findById(user.id);
+        if (!userFound) return res.sendStatus(401);
 
-    return res.json({
-        id: userFound._id,
-        email: userFound.correo,
-        rol: userFound.rol,
-        nombre: userFound.nombre,
-        primerApellido: userFound.primerApellido,
-        segundoApellido: userFound.segundoApellido,
-    });
+        return res.json(true);
     });
 };
 
@@ -128,27 +111,27 @@ const login = async (req,res)=>{
 
         if (!userFound)
             return res.status(400).json({
-            message: ["The email does not exist"],
+                message: ["The email does not exist"],
             });
 
         const isMatch = await bcrypt.compare(contrasena, userFound.contrasena);
         if (!isMatch) {
             return res.status(400).json({
-            message: ["The password is incorrect"],
+                message: ["The password is incorrect"],
             });
         }
-    
+
         const token = await createAccessToken({
             id: userFound._id,
         });
-    
+
         res.cookie("token", token, {
             httpOnly: false,
             secure: true,
             sameSite: "none",
         });
-        
-    
+
+
         res.json({
             id: userFound._id,
             email: userFound.correo,
@@ -157,23 +140,13 @@ const login = async (req,res)=>{
             primerApellido: userFound.primerApellido,
             segundoApellido: userFound.segundoApellido
         });
-        } catch (error) {
+    } catch (error) {
         return res.status(500).json({ message: error.message });
-        }
+    }
 };
-
-const logout = (req, res) => {
-    res.cookie("token", "", {
-        httpOnly: true,
-        secure: true,
-        expires: new Date(0),
-    });
-    return res.sendStatus(200);
-}
 
 module.exports={
     register,
     login,
-    logout,
     verifyToken
 };
