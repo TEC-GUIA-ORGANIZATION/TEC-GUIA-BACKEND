@@ -125,20 +125,8 @@ const login = async (req,res)=>{
             id: userFound._id,
         });
 
-        res.cookie("token", token, {
-            httpOnly: false,
-            secure: true,
-            sameSite: "none",
-        });
-
-
         res.json({
-            id: userFound._id,
-            email: userFound.correo,
-            rol: userFound.rol,
-            nombre: userFound.nombre,
-            primerApellido: userFound.primerApellido,
-            segundoApellido: userFound.segundoApellido
+            token: token,
         });
     } catch (error) {
         return res.status(500).json({ message: error.message });
