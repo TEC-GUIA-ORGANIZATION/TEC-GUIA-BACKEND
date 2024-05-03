@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(cors());
 
 app.use(cors({
-  origin: ['http://localhost:8080', 'https://frontend-tec-guia.azurewebsites.net'],
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
