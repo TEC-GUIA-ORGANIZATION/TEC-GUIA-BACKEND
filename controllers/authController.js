@@ -52,12 +52,16 @@ const register = async (req, res) => {
             id: usuarioSaved._id,
         });
 
+        res.json({
+            theToken: token
+        })
+
         res.cookie("token", token);
     
-        res.json({
-            id: usuarioSaved._id,
-            email: usuarioSaved.correo,
-        });
+        //res.json({
+            //id: usuarioSaved._id,
+            //email: usuarioSaved.correo,
+        //});
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
