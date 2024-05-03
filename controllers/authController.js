@@ -4,6 +4,7 @@ const {createAccessToken} = require("../libs/jwt")
 const jwt = require("jsonwebtoken");
 const ProfesorGuia = require("../models/profesorGuiaModel.js");
 const AsistenteAdministrador = require("../models/asistenteAdministradorModel.js");
+const TOKEN_SECRET = "secret";
 require('dotenv').config();
 
 const register = async (req, res) => {
@@ -93,7 +94,7 @@ const verifyToken = async (req, res) => {
     const { token } = req.body;
     if (!token) return res.send(false);
 
-    jwt.verify(token, process.env.TOKEN_SECRET, async (error, user) => {
+    jwt.verify(token, TOKEN_SECRET, async (error, user) => {
         if (error) return res.sendStatus(401);
 
         const userFound = await Usuario.findById(user.id);
