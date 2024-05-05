@@ -1,11 +1,6 @@
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
-
-//inheritance from usuarioModel 
-const Usuario = require('./usuarioModel');
-
-const profesorGuiaSchema = new Schema({
+const profesorGuiaSchema = new mongoose.Schema({
     codigo: {
         type: String,
         required: true
@@ -28,8 +23,6 @@ const profesorGuiaSchema = new Schema({
         type: Boolean,
         required: true
     },
-})
+});
 
-
-const ProfesorGuia = mongoose.model('ProfesorGuia',profesorGuiaSchema);
-module.exports = ProfesorGuia;
+export const ProfesorGuiaModel = mongoose.model('ProfesorGuia', profesorGuiaSchema);
