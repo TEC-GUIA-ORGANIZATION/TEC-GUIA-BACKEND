@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
-import { ActividadModel } from '../presentation/Models/activities.model';
+import { ActivityModel } from '../presentation/Models/activities.model';
 
 // const Actividad = mongoose.model('Actividad', actividad);
 
@@ -11,7 +11,7 @@ export class ActivitiesController {
 
     public getActivities = async (req: Request, res: Response) => {
         try {
-            const actividades = await ActividadModel.find();
+            const actividades = await ActivityModel.find();
             return res.json(actividades);
         } catch (error) {
             console.log(error);
@@ -21,7 +21,7 @@ export class ActivitiesController {
 
     public getActivitiesById = async (req: Request, res: Response) => {
         try {
-            const actividad = await ActividadModel.findById(req.params.id);
+            const actividad = await ActivityModel.findById(req.params.id);
             if (!actividad) return res.status(404).json({ error: 'Actividad no encontrada' });
 
             return res.json(actividad);
@@ -33,7 +33,7 @@ export class ActivitiesController {
 
     public createActivity = async (req: Request, res: Response) => {
         try {
-            const newActivity = new ActividadModel(req.body);
+            const newActivity = new ActivityModel(req.body);
             await newActivity.save();
             res.status(200).json(newActivity);
         } catch (error) {
@@ -44,7 +44,7 @@ export class ActivitiesController {
 
     public deleteActivity = async (req: Request, res: Response) => {
         try {
-            const actividadEliminada = await ActividadModel.findByIdAndDelete(req.params.id);
+            const actividadEliminada = await ActivityModel.findByIdAndDelete(req.params.id);
             return (!actividadEliminada)
                 ? res.status(404).json({ error: 'Actividad no encontrada. ' })
                 : res.json({ mensaje: 'Actividad eliminada correctamente.' });
@@ -57,7 +57,7 @@ export class ActivitiesController {
     // Actualizar una actividad por ID
     public updateActivity = async (req: Request, res: Response) => {
         try {
-            const actividadActualizada = await ActividadModel.findByIdAndUpdate(req.params.id, req.body, { new: true }); //* {new:true} permite ver el objeto json actualizado.
+            const actividadActualizada = await ActivityModel.findByIdAndUpdate(req.params.id, req.body, { new: true }); //* {new:true} permite ver el objeto json actualizado.
             return (!actividadActualizada)
                 ? res.status(404).json({ error: 'Actividad no encontrada' })
                 : res.json(actividadActualizada);
