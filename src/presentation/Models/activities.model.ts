@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export enum tipoActividad {
+export enum activityTypeEnum {
     ORIENTADORA = 'Orientadora',
     MOTIVACIONAL = 'Motivacional',
     APOYO_VIDA_ESTUDIANTIL = 'De apoyo a la vida estudiantil',
@@ -8,60 +8,90 @@ export enum tipoActividad {
     RECREACION = 'De recreacion'
 };
 
-export enum estadoActividad {
+export enum activityStatusEnum {
     PLANEADA = 'PLANEADA',
     NOTIFICADA = 'NOTIFICADA',
     REALIZADA = 'REALIZADA',
     CANCELADA = 'CANCELADA'
 };
 
-const actividadSchema = new mongoose.Schema({
-    // semana: {
-    //   type: Number,
-    //   require: true,  
-    // },
-    tipoActividad:{
+interface IActivity extends Document {
+    week: number,
+    activity: activityTypeEnum,
+    activityName: string,
+    responsible: [string],
+    daysToAnnounce: number,
+    daysToRemember: number,
+    isInPerson: boolean,
+    meetingLink: string,
+    poster: string,
+    activityStatus: string,
+    evidence: {
+        attendancePhoto: String,
+        participantsPhoto: String,
+        recordingLink: String
+    },
+}
+
+interface ActivityDocument extends IActivity, Document {}
+
+const activitySchema = new mongoose.Schema<ActivityDocument>({
+    week: {
+      type: Number,
+      require: true,  
+    },
+    activity:{
         type: String,
-        enum: tipoActividad,
+        enum: activityTypeEnum,
         require: true,
     }, 
-    nombreActividad: {
+    activityName: {
         type: String,
         require: true,
     },
-    // responsables: {
-    //     type: [String],
-    //     require: true,
-    // },
-    // diasParaAnunciar: {
-    //     type: Number,
-    //     require: true,
-    // },
-    // diasParaRecordar: {
-    //     type: Number,
-    //     require: true,
-    // },
-    // isPresencial: {
-    //     type: Boolean,
-    //     require: true,
-    // },
-    // enlaceReu: {
-    //     type: String,
-    //     require: false,
-    // },
-    // afiche: {
-    //     type: Buffer,
-    //     require: true,
-    // },
-    // estado: {
-    //     type: String,
-    //     enum: estadoActividad,
-    //     require: true,
-    // },
-    // evidencias: {
-    //     type: [Buffer] | String,
-    //     require: false,
-    // }
+    responsible: {
+        type: [String],
+        require: true,
+    },
+    daysToAnnounce: {
+        type: Number,
+        require: true,
+    },
+    daysToRemember: {
+        type: Number,
+        require: true,
+    },
+    isInPerson: {
+        type: Boolean,
+        require: true,
+    },
+    meetingLink: {
+        type: String,
+        require: false,
+    },
+    poster: {
+        type: String,
+        require: true,
+    },
+    activityStatus: {
+        type: String,
+        enum: activityStatusEnum,
+        require: true,
+    },
+    evidence: {
+        type: {
+            attendancePhoto: String,
+            participantsPhoto: String,
+            recordingLink: String
+        },
+        validate: {
+            validator: function(this: ActivityDocument) {
+                return this.activityStatus === activityStatusEnum.REALIZADA;
+            },
+            message: 'Las evidencias son requeridas para actividades realizadas'
+        }
+    }
 });
 
-export const ActividadModel = mongoose.model('Actividades', actividadSchema);
+export const ActivityModel = mongoose.model('Actividades', activitySchema);
+
