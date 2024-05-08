@@ -1,7 +1,7 @@
 import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
 import jwt from 'jsonwebtoken';
-import { IGuideProfessor, ProfesorGuiaModel as GuideProfesor} from '../presentation/Models/usuario.model';
-import { AsistenteAdministradorModel as Admin} from '../presentation/Models/usuario.model';
+import { IGuideProfessor, ProfesorGuiaModel as GuideProfesor } from '../presentation/Models/profesorGuia.model';
+import { AdminAssistantModel as Admin } from '../presentation/Models/asistenteAdministrador.model';
 import { Request, Response } from 'express'
 import { envs } from "../config/envs";
 import { rol } from "../presentation/Models/usuario.model";
