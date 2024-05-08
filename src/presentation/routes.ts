@@ -8,7 +8,7 @@ export class AppRoutes {
         
         const router = Router();
 
-        router.use('/api/todos', ActivitiesRoute.routes);
+        router.use('/api/activities', ActivitiesRoute.routes);
         router.use('/api/auth', AuthRoutes.routes);
 
         return router;

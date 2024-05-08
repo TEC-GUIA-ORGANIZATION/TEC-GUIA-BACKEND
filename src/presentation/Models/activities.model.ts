@@ -26,7 +26,7 @@ interface IActivity extends Document {
     meetingLink: string,
     poster: string,
     activityStatus: string,
-    evidence: {
+    evidence?: {
         attendancePhoto: String,
         participantsPhoto: String,
         recordingLink: String
@@ -84,12 +84,7 @@ const activitySchema = new mongoose.Schema<ActivityDocument>({
             participantsPhoto: String,
             recordingLink: String
         },
-        validate: {
-            validator: function(this: ActivityDocument) {
-                return this.activityStatus === activityStatusEnum.REALIZADA;
-            },
-            message: 'Las evidencias son requeridas para actividades realizadas'
-        }
+        require: true,
     }
 });
 
