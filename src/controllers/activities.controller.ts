@@ -34,6 +34,27 @@ export class ActivitiesController {
     public createActivity = async (req: Request, res: Response) => {
         try {
             const newActivity = new ActivityModel(req.body);
+
+            //Revisar bien esto, puede ser mas sencillo validarlo desde el front
+            /*
+            // const attribute = newActivity.evidence?.attendancePhoto.toString();
+            // console.log(attribute);
+            // const isEvidenceComplete: boolean = (attribute != null && attribute != "" && attribute != undefined);
+            // console.log(isEvidenceComplete);
+
+            // const evidence = newActivity.evidence;
+
+            // const prueba:boolean = (evidence != undefined && evidence != null);
+            // console.log(prueba)
+
+            // if(!(newActivity.activityStatus === 'REALIZADA' && isEvidenceComplete)) 
+            //     res.status(400).json({ error: 'Por favor completar todos los campos.' });
+*/
+
+
+
+
+
             await newActivity.save();
             res.status(200).json(newActivity);
         } catch (error) {

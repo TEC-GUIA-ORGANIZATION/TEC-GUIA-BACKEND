@@ -1,28 +1,38 @@
 import mongoose from 'mongoose';
+import { IUser, UsuarioModel } from './usuario.model';
 
-const profesorGuiaSchema = new mongoose.Schema({
-    codigo: {
+
+export interface IGuideProfessor extends Document, IUser {
+    code: string;
+    officePhone: string;
+    personalPhone: string;
+    isCoordinator?: boolean;
+    isActive?: boolean;
+}
+
+const profesorGuiaSchema = new mongoose.Schema<IGuideProfessor>({
+    code: {
         type: String,
         required: true
     },
-    telefonoOficina: {
+    officePhone: {
         type: String,
         required: true,
         unique: true
     },
-    telefonoPersonal: {
+    personalPhone: {
         type: String,
         required: false,
         unique: true
     },
-    esCoordinador: {
+    isCoordinator: {
         type: Boolean,
         required: true
     },
-    estaActivo: {
+    isActive: {
         type: Boolean,
         required: true
     },
 });
 
-export const ProfesorGuiaModel = mongoose.model('ProfesorGuia', profesorGuiaSchema);
+export const ProfesorGuiaModel = UsuarioModel.discriminator('ProfesorGuia', profesorGuiaSchema);
