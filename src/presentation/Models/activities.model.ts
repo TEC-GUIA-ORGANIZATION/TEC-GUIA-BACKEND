@@ -38,45 +38,45 @@ interface ActivityDocument extends IActivity, Document {}
 const activitySchema = new mongoose.Schema<ActivityDocument>({
     week: {
       type: Number,
-      require: true,  
+      required: true,  
     },
     activity:{
         type: String,
         enum: activityTypeEnum,
-        require: true,
+        required: true,
     }, 
     activityName: {
         type: String,
-        require: true,
+        required: true,
     },
     responsible: {
         type: [String],
-        require: true,
+        required: true,
     },
     daysToAnnounce: {
         type: Number,
-        require: true,
+        required: true,
     },
     daysToRemember: {
         type: Number,
-        require: true,
+        required: true,
     },
     isInPerson: {
         type: Boolean,
-        require: true,
+        required: true,
     },
     meetingLink: {
         type: String,
-        require: false,
+        required: false,
     },
     poster: {
         type: String,
-        require: true,
+        required: true,
     },
     activityStatus: {
         type: String,
         enum: activityStatusEnum,
-        require: true,
+        required: true,
     },
     evidence: {
         type: {
@@ -84,7 +84,7 @@ const activitySchema = new mongoose.Schema<ActivityDocument>({
             participantsPhoto: String,
             recordingLink: String
         },
-        require: true,
+        required: true,
     }
 });
 
