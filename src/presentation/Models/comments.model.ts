@@ -1,24 +1,37 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const comentarioSchema = new mongoose.Schema({
-    date: {
-        type: Date,
+export interface IComment {
+    activityID: mongoose.Types.ObjectId,
+    professor: string,
+    message: string,
+    timestamp: Date,
+    parentID?: mongoose.Types.ObjectId,
+    children: mongoose.Types.ObjectId[]
+}
+
+const commentSchema = new mongoose.Schema<IComment>({
+    activityID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Actividades',
         required: true
     },
-    author: {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'Usuario',
-        required: true
-    },
-    content: {
+    professor: {
         type: String,
         required: true
     },
-    answer: {
-        type: [this],
-        required: false
+    message: {
+        type: String,
+        required: true
     },
+    timestamp: {
+        type: Date,
+        default: Date.now
+    },
+    parentID: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Comments'
+    },
+    children: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
 })
 
-
-export const CommentsModel = mongoose.model('Comentarios', comentarioSchema);
+export const CommentsModel = mongoose.model('Comments', commentSchema);
