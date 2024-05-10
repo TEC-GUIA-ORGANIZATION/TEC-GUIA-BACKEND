@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IUser, UserModel} from './usuario.model';
+import { IUser, UsuarioModel} from './usuario.model';
 
 export interface IAdminAssistant extends Document,IUser {
     isMain: boolean;
@@ -12,4 +12,4 @@ const AdminAssistantSchema = new mongoose.Schema<IAdminAssistant>({
     },
 });
 
-export const AdminAssistantModel = UserModel.discriminator('adminAssistant', AdminAssistantSchema);
+export const AdminAssistantModel = UsuarioModel.discriminator('adminAssistant', AdminAssistantSchema);

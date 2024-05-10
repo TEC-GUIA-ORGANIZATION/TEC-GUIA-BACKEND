@@ -12,6 +12,7 @@ export class CommentsRoutes {
 
         router.post('/:id', commentController.createComment); 
         router.post('/:parentID/reply', commentController.replyToComment);
+        router.patch('/:commentID', commentController.updateComment);
 
         return router;
     }

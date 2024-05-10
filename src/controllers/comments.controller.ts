@@ -32,8 +32,19 @@ export class CommentController {
         }
     }
 
-    public updateComment = async (commentID: string, update: Partial<IComment>) => {
-        return await CommentsModel.findByIdAndUpdate(commentID, update, {new: true});
+    public updateComment = async (req: Request, res: Response) => {
+        try {
+            const commentID  = req.params.commentID;
+
+            const updatedComment = await CommentsModel.findByIdAndUpdate(commentID, {message: req.body.message,}, { new: true });
+
+            if(!updatedComment) 
+                return res.status(404).json({ message: 'Comment not found'});
+
+            res.status(200).json(updatedComment);
+        } catch (error) {
+            res.status(500).json({ message: error });
+        }
     }
 
 
