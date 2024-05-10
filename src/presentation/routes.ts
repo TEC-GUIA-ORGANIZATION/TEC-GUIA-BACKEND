@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { AuthRoutes } from "./Routes/auth.routes";
 import { ActivitiesRoute } from "./Routes/activities.routes";
+import { CommentsRoutes } from "./Routes/commets.routes";
 
 export class AppRoutes {
 
@@ -10,6 +11,7 @@ export class AppRoutes {
 
         router.use('/api/activities', ActivitiesRoute.routes);
         router.use('/api/auth', AuthRoutes.routes);
+        router.use('/api/comments', CommentsRoutes.routes);
 
         return router;
     }

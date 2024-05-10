@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { IComment, CommentsModel } from './comments.model';
 
 export enum activityTypeEnum {
     ORIENTADORA = 'Orientadora',
@@ -31,11 +32,10 @@ interface IActivity extends Document {
         participantsPhoto: String,
         recordingLink: String
     },
+    comments?: IComment[]
 }
 
-interface ActivityDocument extends IActivity, Document {}
-
-const activitySchema = new mongoose.Schema<ActivityDocument>({
+const activitySchema = new mongoose.Schema<IActivity>({
     week: {
       type: Number,
       required: true,  
@@ -85,7 +85,9 @@ const activitySchema = new mongoose.Schema<ActivityDocument>({
             recordingLink: String
         },
         required: true,
-    }
+    },
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
+    
 });
 
 export const ActivityModel = mongoose.model('Actividades', activitySchema);
