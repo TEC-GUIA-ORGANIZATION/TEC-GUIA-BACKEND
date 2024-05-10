@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IUser, UsuarioModel } from './usuario.model';
+import { IUser, UserModel } from './usuario.model';
 
 
 export interface IGuideProfessor extends Document, IUser {
@@ -35,4 +35,4 @@ const profesorGuiaSchema = new mongoose.Schema<IGuideProfessor>({
     },
 });
 
-export const ProfesorGuiaModel = UsuarioModel.discriminator('ProfesorGuia', profesorGuiaSchema);
+export const  ProfessorGuideModel = UserModel.discriminator('ProfesorGuia', profesorGuiaSchema);

@@ -1,7 +1,7 @@
-import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
+import { IUser, UserModel as User } from '../presentation/Models/usuario.model';
 import jwt from 'jsonwebtoken';
-import { IGuideProfessor, ProfesorGuiaModel as GuideProfesor} from '../presentation/Models/usuario.model';
-import { AsistenteAdministradorModel as Admin} from '../presentation/Models/usuario.model';
+import { IGuideProfessor, ProfessorGuideModel as GuideProfesor} from '../presentation/Models/profesorGuia.model';
+import { AdminAssistantModel as Admin} from '../presentation/Models/asistenteAdministrador.model';
 import { Request, Response } from 'express'
 import { envs } from "../config/envs";
 import { rol } from "../presentation/Models/usuario.model";
@@ -14,27 +14,25 @@ export class AuthController {
 
         try {
 
-
-            if ({ rol: req.body.rol === rol.ADMIN}) {
+             
                 const newUser:IUser  = new Admin(req.body);
                 newUser.password = await newUser.encryptPassword(newUser.password);
                 const savedUser = await newUser.save();
                 //Token
-                const token: string = jwt.sign({ _id: savedUser._id }, envs.TOKEN_SECRET || 'tokentest', {
-                    expiresIn: 60 * 60 * 24
-            });
-                res.header('auth-token', token).json(savedUser);  
-            } else if ({ rol: req.body.rol ===  rol.PROFESOR_GUIA}) {
-                console.log('here');
-                const newUser:IGuideProfessor  = new GuideProfesor(req.body);
-                newUser.password = await newUser.encryptPassword(newUser.password);
-                const savedUser = await newUser.save();
-                //Token
-                const token: string = jwt.sign({ _id: savedUser._id }, envs.TOKEN_SECRET || 'tokentest', {
+            const token: string = jwt.sign({ _id: savedUser._id }, envs.TOKEN_SECRET || 'tokentest', {
                     expiresIn: 60 * 60 * 24
                 });
-                res.header('auth-token', token).json(savedUser); 
-            }
+                res.header('auth-token', token).json(savedUser);  
+            // if ({ rol: req.body.rol ===  rol.PROFESOR_GUIA}) {
+            //     const newUser:IGuideProfessor  = new GuideProfesor(req.body);
+            //     newUser.password = await newUser.encryptPassword(newUser.password);
+            //     const savedUser = await newUser.save();
+            //     //Token
+            //     const token: string = jwt.sign({ _id: savedUser._id }, envs.TOKEN_SECRET || 'tokentest', {
+            //         expiresIn: 60 * 60 * 24
+            //     });
+            //     res.header('auth-token', token).json(savedUser); 
+            // }
         } catch (error) {
             res.status(500).json({ error: 'Error al obtener los datos' });
         }
