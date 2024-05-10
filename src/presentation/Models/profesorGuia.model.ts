@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import { IUser, UserModel } from './usuario.model';
+import mongoose, {Document} from 'mongoose';
+import { IUser, UsuarioModel } from './usuario.model';
 
 
 export interface IGuideProfessor extends Document, IUser {
@@ -10,7 +10,7 @@ export interface IGuideProfessor extends Document, IUser {
     isActive?: boolean;
 }
 
-const profesorGuiaSchema = new mongoose.Schema<IGuideProfessor>({
+const proffesorSchema = new mongoose.Schema({
     code: {
         type: String,
         required: true
@@ -18,12 +18,10 @@ const profesorGuiaSchema = new mongoose.Schema<IGuideProfessor>({
     officePhone: {
         type: String,
         required: true,
-        unique: true
     },
     personalPhone: {
         type: String,
         required: false,
-        unique: true
     },
     isCoordinator: {
         type: Boolean,
@@ -35,4 +33,5 @@ const profesorGuiaSchema = new mongoose.Schema<IGuideProfessor>({
     },
 });
 
-export const  ProfessorGuideModel = UserModel.discriminator('ProfesorGuia', profesorGuiaSchema);
+export const ProfesorGuiaModel = UsuarioModel.discriminator<IGuideProfessor>('ProfesorGuia', proffesorSchema);
+

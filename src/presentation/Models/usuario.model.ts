@@ -77,6 +77,4 @@ usuarioSchema.methods.validatePassword = async function (password: string): Prom
     return await bcrypt.compare(password, this.password);
 }
 
-const UserModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
-
-export { UserModel };
+export const UsuarioModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
