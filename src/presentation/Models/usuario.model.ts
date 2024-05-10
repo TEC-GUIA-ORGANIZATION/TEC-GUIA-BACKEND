@@ -33,7 +33,7 @@ const usuarioSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'], 
+        //match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'], 
         lowercase: true
     },
     password: {
@@ -77,6 +77,6 @@ usuarioSchema.methods.validatePassword = async function (password: string): Prom
     return await bcrypt.compare(password, this.password);
 }
 
-const UsuarioModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
+const UserModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
 
-export { UsuarioModel };
+export { UserModel };
