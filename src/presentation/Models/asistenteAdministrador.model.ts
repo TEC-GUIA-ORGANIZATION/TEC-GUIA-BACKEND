@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { IUser, UsuarioModel } from './usuario.model';
+import { IUser, UsuarioModel} from './usuario.model';
 
 export interface IAdminAssistant extends Document,IUser {
     isMain: boolean;
