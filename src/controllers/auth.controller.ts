@@ -1,4 +1,4 @@
-import { IUser, UserModel as User } from '../presentation/Models/usuario.model';
+import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
 import jwt from 'jsonwebtoken';
 import { AdminAssistantModel as AdminUser } from '../presentation/Models/asistenteAdministrador.model';
 import { ProfesorGuiaModel as ProfesorUser } from '../presentation/Models/profesorGuia.model';
