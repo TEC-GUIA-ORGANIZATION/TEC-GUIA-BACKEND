@@ -1,6 +1,6 @@
 import express, { Router, Application } from 'express';
 import path from 'path';
-
+import cors from "cors";
 interface Options {
     port: number;
     routes: Router;
@@ -22,7 +22,12 @@ export class Server {
 
     async start() {
 
-        //* Middlewares
+        // Allow multiple origins
+        const allowedOrigins = ['http://localhost:4200', 'https://frontend-tec-guia.azurewebsites.net'];
+        
+        this.app.use(cors({
+            origin: allowedOrigins
+        }));
         this.app.use(express.json());
         this.app.use(express.urlencoded( {extended:true} )); // x-www-form-urlencoded
         // this.app.use((req: Request, res: Response, next: NextFunction) => {

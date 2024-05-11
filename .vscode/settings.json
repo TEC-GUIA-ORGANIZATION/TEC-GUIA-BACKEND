@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/4109886e-2562-4ed6-b255-e2cd162f9450/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/backend-tec-guia",
+    "appService.deploySubpath": "."
+}

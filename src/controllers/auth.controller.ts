@@ -38,8 +38,10 @@ export class AuthController {
         const token: string = jwt.sign({ _id: user._id }, envs.TOKEN_SECRET || 'tokentest', {
             expiresIn: 60 * 60 * 24
         });
-        res.header('auth-token', token).json(user);
 
+        res.set('Access-Control-Expose-Headers', 'auth-token');
+        res.header('auth-token', [token]).json(user);
+        
         console.log(req.body);
     }
 
