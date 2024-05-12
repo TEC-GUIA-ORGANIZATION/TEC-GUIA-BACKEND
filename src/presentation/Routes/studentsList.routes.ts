@@ -9,12 +9,10 @@ export class StudentsListRoutes {
 
         const studentsController = new StudentsController();
 
-        router.post('/uploadStudentLists', studentsController.uploadStudentList); //* Crear
-        router.patch('/updateStudent/:id', studentsController.updateStudent); //* Crear
-        router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); //* Crear
-        router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); //* Crear
-        // router.delete('/:id', activitiesController.deleteActivity); //* Eliminar
-        // router.patch('/:id', activitiesController.updateActivity) //* Actualizar 
+        router.post('/uploadStudentLists', studentsController.uploadStudentList); //* Subir lista cargada de estudiantes
+        router.patch('/updateStudent/:id', studentsController.updateStudent); //* Actualizar info de estudiante
+        router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); //* Obtener todos los estudiantes
+        router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); //* Obtener todos los estudiantes por campo
         return router;
     }
 }
