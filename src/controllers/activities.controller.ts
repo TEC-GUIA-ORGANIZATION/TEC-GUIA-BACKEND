@@ -31,6 +31,21 @@ export class ActivitiesController {
         }
     }
 
+    public getNextActivity = async (req: Request, res: Response) => {
+        const now = new Date(); 
+        const utcNow = new Date(now.toISOString()); 
+        // Find the next upcoming activity that has not occurred yet
+        const actividad = await ActivityModel
+            .findOne({ date: { $gt: utcNow } })
+            .sort({ date: 1 }) 
+            .exec(); 
+        return (!actividad) 
+        ? res.status(404).json({ error: 'Actividad no encontrada' })
+        : res.json(actividad);
+    }
+
+
+
     public createActivity = async (req: Request, res: Response) => {
         try {
             const newActivity = new ActivityModel(req.body);
