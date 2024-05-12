@@ -18,6 +18,7 @@ export enum activityStatusEnum {
 
 interface IActivity extends Document {
     week: number,
+    date: Date,
     activity: activityTypeEnum,
     activityName: string,
     responsible: [string],
@@ -38,6 +39,10 @@ interface IActivity extends Document {
 const activitySchema = new mongoose.Schema<IActivity>({
     week: {
       type: Number,
+      required: true,  
+    },
+    date: {
+      type: Date,
       required: true,  
     },
     activity:{

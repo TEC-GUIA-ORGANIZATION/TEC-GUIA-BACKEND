@@ -31,6 +31,7 @@ export class ActivitiesController {
         }
     }
 
+
     public createActivity = async (req: Request, res: Response) => {
         try {
             const newActivity = new ActivityModel(req.body);

@@ -45,6 +45,7 @@ export class StudentsController {
           campus: campus
         });
 
+
         return (!students) 
         ? res.status(400).json({error: 'No existen estudiantes matriculados en la sede seleccionada para este periodo'})
         : res.status(200).json(students);
