@@ -50,12 +50,12 @@ export class UserController {
         const id  = req.params.id;
 
         if (!mongoose.Types.ObjectId.isValid(id))
-          return res.status(404).json({error: 'Usuario no encontrado.'});
+          return res.status(404).json({error: 'ID no valido, intentelo de nuevo.'});
         
         const user = await UsuarioModel.findByIdAndUpdate(id, req.body, { new: true });
       
         return (!user) 
         ? res.status(400).json({error: 'No existe le usuario'})
         : res.status(200).json(user);
-    }
+    } 
 }

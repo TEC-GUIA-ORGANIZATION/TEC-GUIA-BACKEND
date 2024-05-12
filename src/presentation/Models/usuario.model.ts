@@ -1,4 +1,6 @@
 import mongoose, {Document} from 'mongoose';
+import {campus as CampusEnum } from '../../utils/campus'
+
 import bcrypt from 'bcrypt';
 export enum campus {
     CARTAGO = 'Cartago',
@@ -10,7 +12,8 @@ export enum campus {
 
 export enum rol {
     ADMIN = 'admin',
-    PROFESOR_GUIA = 'profesor guia'
+    PROFESOR_GUIA = 'profesor guia',
+    ESTUDIANTE = 'estudiante'
 };
 
 export interface IUser extends Document {
@@ -54,7 +57,7 @@ const usuarioSchema = new mongoose.Schema({
     },
     campus: {
         type: String,
-        enum: campus,
+        enum: CampusEnum,
         required: true
     },
     photo: {
