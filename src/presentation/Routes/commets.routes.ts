@@ -13,7 +13,8 @@ export class CommentsRoutes {
         router.post('/:id', commentController.createComment); 
         router.post('/:parentID/reply', commentController.replyToComment);
         router.patch('/:commentID', commentController.updateComment);
-
+        router.patch('/:commentID', commentController.deleteComment);
+        router.delete('/delete/:commentID', commentController.deleteCommentByID);
         return router;
     }
 }
