@@ -31,6 +31,44 @@ export class StudentsController {
         : res.status(200).json(students);
     }
 
+    public getStudentsOrderedByCampus = async (req: Request, res: Response) => {
+        const { semester, entryYear } = req.query;
+        if (!semester || !entryYear) {
+          return res.status(400).send('Semestre y año requeridos');
+        }
+        const students = await Student.find({
+          semester: semester,
+          entryYear: entryYear
+        }).sort({ campus: 1 });
+        return (!students) ? res.status(400).json({error: 'No existen usuarios cargados en el periodo actual'})
+        : res.status(200).json(students);
+    }
+
+    public getStudentsOrderedByAlphabeticOrder = async (req: Request, res: Response) => {
+        const { semester, entryYear } = req.query;
+        if (!semester || !entryYear) {
+          return res.status(400).send('Semestre y año requeridos');
+        }
+        const students = await Student.find({
+          semester: semester,
+          entryYear: entryYear
+        }).sort({ name: 1 });
+        return (!students) ? res.status(400).json({error: 'No existen usuarios cargados en el periodo actual'})
+        : res.status(200).json(students);
+    }
+
+    public getStudentsOrderedByInstitutionId = async (req: Request, res: Response) => {
+        const { semester, entryYear } = req.query;
+        if (!semester || !entryYear) {
+          return res.status(400).send('Semestre y año requeridos');
+        }
+        const students = await Student.find({
+          semester: semester,
+          entryYear: entryYear
+        }).sort({ institutionId: 1 });
+        return (!students) ? res.status(400).json({error: 'No existen usuarios cargados en el periodo actual'})
+        : res.status(200).json(students);
+    }
 
     public getAllStudentsByCampus = async (req: Request, res: Response) => {
 
