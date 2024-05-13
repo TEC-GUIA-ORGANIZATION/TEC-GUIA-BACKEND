@@ -23,7 +23,7 @@ interface IActivity extends Document {
     activityName: string,
     responsible: [string],
     daysToAnnounce: number,
-    daysToRemember: number,
+    daysToRemember: [Date],
     isInPerson: boolean,
     meetingLink: string,
     poster: string,
@@ -64,10 +64,10 @@ const activitySchema = new mongoose.Schema<IActivity>({
         type: Number,
         required: true,
     },
-    daysToRemember: {
-        type: Number,
+    daysToRemember: [{
+        type: Date,
         required: true,
-    },
+    }],
     isInPerson: {
         type: Boolean,
         required: true,
@@ -83,6 +83,7 @@ const activitySchema = new mongoose.Schema<IActivity>({
     activityStatus: {
         type: String,
         enum: activityStatusEnum,
+        default: activityStatusEnum.PLANEADA,
         required: true,
     },
     evidence: {
@@ -94,7 +95,6 @@ const activitySchema = new mongoose.Schema<IActivity>({
         required: true,
     },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
-    
 });
 
 export const ActivityModel = mongoose.model('Actividades', activitySchema);
