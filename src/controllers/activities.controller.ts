@@ -49,34 +49,67 @@ export class ActivitiesController {
 
     public createActivity = async (req: Request, res: Response) => {
         try {
-            const newActivity = new ActivityModel(req.body);
+            const { week, activity, activityName, responsible, daysToAnnounce, daysToRemember, isInPerson, meetingLink, posterUrl, activityStatus, evidence } = req.body;
+    
+            // Verificar si se proporcionaron todos los campos necesarios
+            if (!week) {
 
-            //Revisar bien esto, puede ser mas sencillo validarlo desde el front
-            /*
-            // const attribute = newActivity.evidence?.attendancePhoto.toString();
-            // console.log(attribute);
-            // const isEvidenceComplete: boolean = (attribute != null && attribute != "" && attribute != undefined);
-            // console.log(isEvidenceComplete);
+                return res.status(400).json({ error: 'Por favor, proporciona la semana de la actividad.' });
+            }
+            if (!activity) {
+                return res.status(400).json({ error: 'Por favor, proporciona el tipo de actividad.' });
+            }
+            if (!activityName) {
+                
+                return res.status(400).json({ error: 'Por favor, proporciona el nombre de la actividad.' });
+            }
+            if (!responsible) {
+                return res.status(400).json({ error: 'Por favor, proporciona al menos un responsable de la actividad.' });
+            }
+            if (!daysToAnnounce) {
+                return res.status(400).json({ error: 'Por favor, proporciona los días para anunciar la actividad.' });
+            }
+            if (!daysToRemember) {
+                return res.status(400).json({ error: 'Por favor, proporciona los días para recordar la actividad.' });
+            }
+            if (typeof isInPerson !== 'boolean') {
+                return res.status(400).json({ error: 'El campo isInPerson debe ser un valor booleano.' });
+            }
+            if (!posterUrl) {
+                return res.status(400).json({ error: 'Por favor, proporciona el póster de la actividad.' });
+            }
+            if (!activityStatus) {
+                return res.status(400).json({ error: 'Por favor, proporciona el estado de la actividad.' });
+            }
+            if (activityStatus!=="REALIZADA" && !evidence) {
+                return res.status(400).json({ error: 'Por favor, proporciona evidencia para la actividad.' });
+            }
 
-            // const evidence = newActivity.evidence;
-
-            // const prueba:boolean = (evidence != undefined && evidence != null);
-            // console.log(prueba)
-
-            // if(!(newActivity.activityStatus === 'REALIZADA' && isEvidenceComplete)) 
-            //     res.status(400).json({ error: 'Por favor completar todos los campos.' });
-*/
-
-
-
-
-
+            const comments:string[]=[];
+            // Crear una nueva actividad
+            const newActivity = new ActivityModel({
+                week,
+                activity,
+                activityName,
+                responsible,
+                daysToAnnounce,
+                daysToRemember,
+                isInPerson,
+                meetingLink,
+                "poster":posterUrl,
+                activityStatus,
+                evidence,
+                comments
+            });
+    
+            // Guardar la actividad en la base de datos
             await newActivity.save();
+    
             res.status(200).json(newActivity);
         } catch (error) {
-            res.status(500).json({ error: 'Error al guardar la actividad' });
+            console.error('Error al crear la actividad:', error);
+            res.status(500).json({ error: 'Error interno del servidor al crear la actividad.' });
         }
-
     }
 
     public deleteActivity = async (req: Request, res: Response) => {

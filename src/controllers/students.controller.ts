@@ -19,7 +19,7 @@ export class StudentsController {
     }
 
     public getAllStudents = async (req: Request, res: Response) => {
-        const { semester, entryYear } = req.query;
+        const { semester, entryYear } = req.body;
         if (!semester || !entryYear) {
           return res.status(400).send('Semestre y año requeridos');
         }
