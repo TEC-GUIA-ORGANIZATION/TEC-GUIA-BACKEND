@@ -9,13 +9,13 @@ export class StudentsListRoutes {
 
         const studentsController = new StudentsController();
 
-        router.post('/uploadStudentLists', studentsController.uploadStudentList); 
-        router.patch('/updateStudent/:id', studentsController.updateStudent); 
-        router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); 
-        router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); 
-        router.get('/getAllStudentsInPeriodOrderedByCampus', studentsController.getAllStudentsOrderByCampus);
-        router.get('/getAllStudentsInPeriodOrderedByInstitutionId', studentsController.getAllStudentsOrderByInstitutionId);
-        router.get('/getAllStudentsInPeriodOrderedByName', studentsController.getAllStudentsOrderByName);
+        router.post('/uploadStudentLists', studentsController.uploadStudentList); //* Subir lista cargada de estudiantes
+        router.patch('/updateStudent/:id', studentsController.updateStudent); //* Actualizar info de estudiante
+        router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); //* Obtener todos los estudiantes
+        router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); //* Obtener todos los estudiantes por campo
+        router.get('/getStudentsOrderedByAlphabeticOrder', studentsController.getStudentsOrderedByAlphabeticOrder); //* Obtener todos los estudiantes por campo
+        router.get('/getStudentsOrderedByCampus', studentsController.getStudentsOrderedByCampus); //* Obtener todos los estudiantes por campo
+        router.get('/getStudentsOrderedByInstitutionId', studentsController.getStudentsOrderedByInstitutionId); //* Obtener todos los estudiantes por campo
         return router;
     }
 }
