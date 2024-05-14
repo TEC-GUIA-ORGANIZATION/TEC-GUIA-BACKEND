@@ -47,10 +47,6 @@ const activitySchema = new mongoose.Schema<IActivity>({
       type: Date,
       required: true,  
     },
-    date: {
-      type: Date,
-      required: true,  
-    },
     activity:{
         type: String,
         enum: activityTypeEnum,
