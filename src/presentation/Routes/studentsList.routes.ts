@@ -13,6 +13,9 @@ export class StudentsListRoutes {
         router.patch('/updateStudent/:id', studentsController.updateStudent); 
         router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); 
         router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); 
+        router.get('/getAllStudentsInPeriodOrderedByCampus', studentsController.getAllStudentsOrderByCampus);
+        router.get('/getAllStudentsInPeriodOrderedByInstitutionId', studentsController.getAllStudentsOrderByInstitutionId);
+        router.get('/getAllStudentsInPeriodOrderedByName', studentsController.getAllStudentsOrderByName);
         return router;
     }
 }
