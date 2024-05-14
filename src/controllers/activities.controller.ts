@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
 import { ActivityModel } from '../presentation/Models/activities.model';
+import { activityStatusEnum } from '../presentation/Models/activities.model'
 
 // const Actividad = mongoose.model('Actividad', actividad);
 
@@ -30,6 +31,20 @@ export class ActivitiesController {
             res.status(500).json({ error: 'Error al obtener la actividad' });
         }
     }
+
+    public getNextActivity = async (req: Request, res: Response) => {
+        const now = new Date(); 
+        const utcNow = new Date(now.toISOString()); 
+        // Find the next upcoming activity that has not occurred yet
+        const actividad = await ActivityModel
+            .findOne({ date: { $gt: utcNow } })
+            .sort({ date: 1 }) 
+            .exec(); 
+        return (!actividad) 
+        ? res.status(404).json({ error: 'Actividad no encontrada' })
+        : res.json(actividad);
+    }
+
 
 
     public createActivity = async (req: Request, res: Response) => {
@@ -87,6 +102,81 @@ export class ActivitiesController {
             res.status(500).json({ error: 'Error al actualizar la actividad' });
         }
     }
+
+    public cancelActivity = async (req: Request, res: Response) => {
+        try {
+            const actividadActualizada = await ActivityModel.findByIdAndUpdate(
+                req.params.id, 
+                { activityStatus: activityStatusEnum.CANCELADA }, 
+                { new: true }
+            ); 
+            return (!actividadActualizada)
+                ? res.status(404).json({ error: 'Actividad no encontrada' })
+                : res.json(actividadActualizada);
+        } catch (error) {
+            res.status(500).json({ error: 'Error al actualizar la actividad' });
+        }
+    }
+
+
+    public markActivityAsCompleted = async (req: Request, res: Response) => {
+        try {
+            const actividadActualizada = await ActivityModel.findByIdAndUpdate(
+                req.params.id, 
+                { activityStatus: activityStatusEnum.REALIZADA }, 
+                { new: true }
+            ); 
+            return (!actividadActualizada)
+                ? res.status(404).json({ error: 'Actividad no encontrada' })
+                : res.json(actividadActualizada);
+        } catch (error) {
+            res.status(500).json({ error: 'Error al actualizar la actividad' });
+        }
+    }
+
+
+    // public publishActivity = async (req: Request, res: Response) => {
+    //     try {
+    //         const actividadActualizada = await ActivityModel.findByIdAndUpdate(
+    //             req.params.id, 
+    //             { activityStatus: activityStatusEnum.NOTIFICADA }, 
+    //             { new: true }
+    //         ); 
+    //         return (!actividadActualizada)
+    //             ? res.status(404).json({ error: 'Actividad no encontrada' })
+    //             : res.json(actividadActualizada);
+    //     } catch (error) {
+    //         res.status(500).json({ error: 'Error al actualizar la actividad' });
+    //     }
+    // }
+
+
+    public publishActivity = async (req: Request, res: Response) => {
+        try {
+            // Fetch activity and calculate the target date for notification
+            const activity = await ActivityModel.findById(req.params.id);
+            if (!activity) {
+                return res.status(404).json({ error: 'Actividad no encontrada' });
+            }
+
+            const utcNow = new Date(new Date().toISOString()); // Current UTC date
+            const targetDate = new Date(activity.date);
+            targetDate.setDate(targetDate.getDate() - activity.daysToAnnounce);
+
+            // Compare dates ignoring time, update if they match
+            return targetDate.toISOString().slice(0, 10) === utcNow.toISOString().slice(0, 10) ?
+                ActivityModel.findByIdAndUpdate(req.params.id, { activityStatus: activityStatusEnum.NOTIFICADA }, { new: true })
+                    .then(updatedActivity => updatedActivity ? res.json(updatedActivity) : res.status(404).json({ error: 'Error during update' }))
+                    .catch(error => res.status(500).json({ error: 'Error al actualizar la actividad' })) :
+                res.status(400).json({ error: 'La actividad no cumple con la fecha para ser notificada' });
+        } catch (error) {
+            console.error('Error in publishing activity:', error);
+            return res.status(500).json({ error: 'Error al actualizar la actividad' });
+        }
+}
+
+
+    
 
 }
 
