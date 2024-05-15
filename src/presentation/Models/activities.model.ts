@@ -13,16 +13,18 @@ export enum activityStatusEnum {
     PLANEADA = 'PLANEADA',
     NOTIFICADA = 'NOTIFICADA',
     REALIZADA = 'REALIZADA',
-    CANCELADA = 'CANCELADA'
+    CANCELADA = 'CANCELADA',
+    PUBLICADA = 'PUBLICADA'
 };
 
-interface IActivity extends Document {
+export interface IActivity extends Document {
     week: number,
+    date: Date,
     activity: activityTypeEnum,
     activityName: string,
     responsible: [string],
     daysToAnnounce: number,
-    daysToRemember: number,
+    daysToRemember: [Date],
     isInPerson: boolean,
     meetingLink: string,
     poster: string,
@@ -38,6 +40,12 @@ interface IActivity extends Document {
 const activitySchema = new mongoose.Schema<IActivity>({
     week: {
       type: Number,
+      required: true,
+      min: 1,     
+      max: 16     
+    },
+    date: {
+      type: Date,
       required: true,  
     },
     activity:{
@@ -57,10 +65,10 @@ const activitySchema = new mongoose.Schema<IActivity>({
         type: Number,
         required: true,
     },
-    daysToRemember: {
-        type: Number,
+    daysToRemember: [{
+        type: Date,
         required: true,
-    },
+    }],
     isInPerson: {
         type: Boolean,
         required: true,
@@ -76,6 +84,7 @@ const activitySchema = new mongoose.Schema<IActivity>({
     activityStatus: {
         type: String,
         enum: activityStatusEnum,
+        default: activityStatusEnum.PLANEADA,
         required: true,
     },
     evidence: {
@@ -87,7 +96,6 @@ const activitySchema = new mongoose.Schema<IActivity>({
         required: true,
     },
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
-    
 });
 
 export const ActivityModel = mongoose.model('Actividades', activitySchema);
