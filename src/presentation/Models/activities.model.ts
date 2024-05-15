@@ -23,6 +23,7 @@ export interface IActivity extends Document {
     date: Date,
     type: activityTypeEnum,
     name: string,
+    desciption: string,
     responsible: [mongoose.ObjectId],
     daysToAnnounce: number,
     daysToRemember: [Date],
@@ -55,6 +56,10 @@ const activitySchema = new mongoose.Schema<IActivity>({
         required: true,
     }, 
     name: {
+        type: String,
+        required: true,
+    },
+    desciption: {
         type: String,
         required: true,
     },
