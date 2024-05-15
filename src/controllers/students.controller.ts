@@ -126,7 +126,7 @@ public getAllStudentsOrderByName = async (req: Request, res: Response) => {
 }
 
 
-    public createStudent = async (student:IStudent): Promise<IStudent> => {
+   public createStudent = async (student:IStudent): Promise<IStudent> => {
         const studentExist = await Student.findOne({
                 $or: [
                     { institutionId: student.institutionId },

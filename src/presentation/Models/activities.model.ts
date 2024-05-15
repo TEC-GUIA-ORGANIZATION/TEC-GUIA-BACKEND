@@ -17,7 +17,7 @@ export enum activityStatusEnum {
     PUBLICADA = 'PUBLICADA'
 };
 
-interface IActivity extends Document {
+export interface IActivity extends Document {
     week: number,
     date: Date,
     activity: activityTypeEnum,
