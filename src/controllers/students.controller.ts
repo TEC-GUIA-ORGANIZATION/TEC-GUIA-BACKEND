@@ -8,7 +8,7 @@ export class StudentsController {
 
     constructor () {}
    
-    public updateStudent= async (req: Request, res: Response)=>{
+    public updateStudent = async (req: Request, res: Response)=>{
         const id  = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(id))
           return res.status(404).json({error: 'Estudiante no encontrado.'});
