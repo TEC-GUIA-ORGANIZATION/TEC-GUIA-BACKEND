@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { ObjectId } from 'mongoose';
 import { IComment, CommentsModel } from './comments.model';
 
 export enum activityTypeEnum {
@@ -22,7 +23,7 @@ export interface IActivity extends Document {
     date: Date,
     activity: activityTypeEnum,
     activityName: string,
-    responsible: [string],
+    responsible: [mongoose.ObjectId],
     daysToAnnounce: number,
     daysToRemember: [Date],
     isInPerson: boolean,
@@ -58,7 +59,7 @@ const activitySchema = new mongoose.Schema<IActivity>({
         required: true,
     },
     responsible: {
-        type: [String],
+        type: [mongoose.Schema.Types.ObjectId],
         required: true,
     },
     daysToAnnounce: {
