@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { CommentController } from '../../controllers/comments.controller';
-import { validateToken } from "../../libs/verifyToken";
 
 
 

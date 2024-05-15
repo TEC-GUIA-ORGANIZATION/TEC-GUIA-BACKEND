@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
-import { ActivityModel } from '../presentation/Models/activities.model';
+import { ActivityModel, IActivity } from '../presentation/Models/activities.model';
 import { activityStatusEnum } from '../presentation/Models/activities.model'
+import { PlanningModel } from "../presentation/Models/planning.model";
 
 // const Actividad = mongoose.model('Actividad', actividad);
 
 export class ActivitiesController {
-
 
     constructor() { }
 
@@ -49,46 +49,46 @@ export class ActivitiesController {
 
     public createActivity = async (req: Request, res: Response) => {
         try {
-            const { week, activity, activityName, responsible, daysToAnnounce, daysToRemember, isInPerson, meetingLink, posterUrl, activityStatus, evidence } = req.body;
+            const { week, 
+                    date,
+                    activity,
+                    activityName, 
+                    responsible, 
+                    daysToAnnounce, 
+                    daysToRemember,
+                    isInPerson, 
+                    meetingLink, 
+                    poster,
+                    activityStatus, 
+                    evidence,
+                    campus,
+                    semester } = req.body;
     
-            // Verificar si se proporcionaron todos los campos necesarios
-            if (!week) {
-
-                return res.status(400).json({ error: 'Por favor, proporciona la semana de la actividad.' });
-            }
-            if (!activity) {
-                return res.status(400).json({ error: 'Por favor, proporciona el tipo de actividad.' });
-            }
-            if (!activityName) {
+            if (!week || !date ||!activity || !activityName || !responsible || !daysToAnnounce || !daysToRemember || typeof isInPerson !== 'boolean' || !poster || !activityStatus || (activityStatus !== "REALIZADA" && !evidence)) {
+                let errorMessage = 'Por favor, proporciona los siguientes campos:';
+                if (!week) errorMessage += ' semana de la actividad,';
+                if (!date) errorMessage += ' fecha de realizacion';
+                if (!activity) errorMessage += ' tipo de actividad,';
+                if (!activityName) errorMessage += ' nombre de la actividad,';
+                if (!responsible) errorMessage += ' al menos un responsable de la actividad,';
+                if (!daysToAnnounce) errorMessage += ' días para anunciar la actividad,';
+                if (!daysToRemember) errorMessage += ' días para recordar la actividad,';
+                if (typeof isInPerson !== 'boolean') errorMessage += ' el campo isInPerson como valor booleano,';
+                if (!poster) errorMessage += ' póster de la actividad,';
+                if (!activityStatus) errorMessage += ' estado de la actividad,';
+                if (activityStatus !== "REALIZADA" && !evidence) errorMessage += ' evidencia para la actividad,';
                 
-                return res.status(400).json({ error: 'Por favor, proporciona el nombre de la actividad.' });
+                // Remove trailing comma
+                errorMessage = errorMessage.replace(/,\s*$/, '');
+            
+                return res.status(400).json({ error: errorMessage + '.' });
             }
-            if (!responsible) {
-                return res.status(400).json({ error: 'Por favor, proporciona al menos un responsable de la actividad.' });
-            }
-            if (!daysToAnnounce) {
-                return res.status(400).json({ error: 'Por favor, proporciona los días para anunciar la actividad.' });
-            }
-            if (!daysToRemember) {
-                return res.status(400).json({ error: 'Por favor, proporciona los días para recordar la actividad.' });
-            }
-            if (typeof isInPerson !== 'boolean') {
-                return res.status(400).json({ error: 'El campo isInPerson debe ser un valor booleano.' });
-            }
-            if (!posterUrl) {
-                return res.status(400).json({ error: 'Por favor, proporciona el póster de la actividad.' });
-            }
-            if (!activityStatus) {
-                return res.status(400).json({ error: 'Por favor, proporciona el estado de la actividad.' });
-            }
-            if (activityStatus!=="REALIZADA" && !evidence) {
-                return res.status(400).json({ error: 'Por favor, proporciona evidencia para la actividad.' });
-            }
-
+            
             const comments:string[]=[];
             // Crear una nueva actividad
             const newActivity = new ActivityModel({
                 week,
+                date,
                 activity,
                 activityName,
                 responsible,
@@ -96,21 +96,43 @@ export class ActivitiesController {
                 daysToRemember,
                 isInPerson,
                 meetingLink,
-                "poster":posterUrl,
+                "poster":poster,
                 activityStatus,
                 evidence,
                 comments
             });
     
             // Guardar la actividad en la base de datos
-            await newActivity.save();
-    
+            await newActivity.save(); 
+            this.addActivityToPlanning(campus, semester, newActivity._id);
             res.status(200).json(newActivity);
         } catch (error) {
             console.error('Error al crear la actividad:', error);
             res.status(500).json({ error: 'Error interno del servidor al crear la actividad.' });
         }
     }
+
+
+
+public addActivityToPlanning = async (campus: string, semester: string, activityId: mongoose.Types.ObjectId) => {
+    const year = new Date().getFullYear();
+    const planning = await PlanningModel.findOne({ semester, campus, year });
+
+    if (!planning) {
+        throw new Error("No se pudo encontrar la planificación para el campus y semestre especificados.");
+    } else {
+        await PlanningModel.findByIdAndUpdate(
+            planning._id,
+            { $push: { activities: activityId} }, // Only push the activity ID
+            { new: true, useFindAndModify: false }
+        );
+    }
+}
+
+    
+
+    
+
 
     public deleteActivity = async (req: Request, res: Response) => {
         try {
