@@ -21,18 +21,18 @@ export enum activityStatusEnum {
 export interface IActivity extends Document {
     week: number,
     date: Date,
-    activity: activityTypeEnum,
-    activityName: string,
+    type: activityTypeEnum,
+    name: string,
     responsible: [mongoose.ObjectId],
     daysToAnnounce: number,
     daysToRemember: [Date],
-    isInPerson: boolean,
-    meetingLink: string,
+    modality: boolean,
+    placeLink: string,
     poster: string,
-    activityStatus: string,
+    status: string,
     evidence?: {
-        attendancePhoto: String,
-        participantsPhoto: String,
+        attendance: [String],
+        participants: [String],
         recordingLink: String
     },
     comments?: IComment[]
@@ -49,12 +49,12 @@ const activitySchema = new mongoose.Schema<IActivity>({
       type: Date,
       required: true,  
     },
-    activity:{
+    type:{
         type: String,
         enum: activityTypeEnum,
         required: true,
     }, 
-    activityName: {
+    name: {
         type: String,
         required: true,
     },
@@ -70,11 +70,11 @@ const activitySchema = new mongoose.Schema<IActivity>({
         type: Date,
         required: true,
     }],
-    isInPerson: {
+    modality: {
         type: Boolean,
         required: true,
     },
-    meetingLink: {
+    placeLink: {
         type: String,
         required: false,
     },
@@ -82,7 +82,7 @@ const activitySchema = new mongoose.Schema<IActivity>({
         type: String,
         required: true,
     },
-    activityStatus: {
+    status: {
         type: String,
         enum: activityStatusEnum,
         default: activityStatusEnum.PLANEADA,
@@ -90,8 +90,8 @@ const activitySchema = new mongoose.Schema<IActivity>({
     },
     evidence: {
         type: {
-            attendancePhoto: String,
-            participantsPhoto: String,
+            attendance: [String],
+            participants: [String],
             recordingLink: String
         },
         required: true,
