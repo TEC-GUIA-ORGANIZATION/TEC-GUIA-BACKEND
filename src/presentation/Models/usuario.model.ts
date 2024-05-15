@@ -1,20 +1,8 @@
 import mongoose, {Document} from 'mongoose';
-import {campus as CampusEnum } from '../../utils/campus'
+import {campus as CampusEnum } from '../../utils/campus.enum'
+import {rol as rol } from '../../utils/rol.enum';
 
 import bcrypt from 'bcrypt';
-export enum campus {
-    CARTAGO = 'Cartago',
-    SAN_JOSE = 'San Jose',
-    SAN_CARLOS = 'San Carlos',
-    ALAJUELA = 'Alajuela',
-    LIMON = 'Limon'
-};
-
-export enum rol {
-    ADMIN = 'admin',
-    PROFESOR_GUIA = 'profesor guia',
-    ESTUDIANTE = 'estudiante'
-};
 
 export interface IUser extends Document {
     email: string;
