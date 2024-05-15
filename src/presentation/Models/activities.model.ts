@@ -16,7 +16,7 @@ export enum activityStatusEnum {
     CANCELADA = 'CANCELADA'
 };
 
-interface IActivity extends Document {
+export interface IActivity extends Document {
     week: number,
     date: Date,
     activity: activityTypeEnum,
