@@ -4,7 +4,7 @@ import { AdminAssistantModel as AdminUser } from '../presentation/Models/asisten
 import { ProfesorGuiaModel as ProfesorUser } from '../presentation/Models/profesorGuia.model';
 import { Request, Response } from 'express';
 import { envs } from "../config/envs";
-import { rol } from "../presentation/Models/usuario.model";
+import { rol } from "../utils/rol.enum";
 export class AuthController {
 
 

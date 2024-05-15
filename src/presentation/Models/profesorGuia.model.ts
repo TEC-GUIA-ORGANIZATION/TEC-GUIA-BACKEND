@@ -10,7 +10,7 @@ export interface IGuideProfessor extends Document, IUser {
     isActive?: boolean;
 }
 
-const proffesorSchema = new mongoose.Schema({
+const professorSchema = new mongoose.Schema({
     code: {
         type: String,
         required: true
@@ -33,5 +33,5 @@ const proffesorSchema = new mongoose.Schema({
     },
 });
 
-export const ProfesorGuiaModel = UsuarioModel.discriminator<IGuideProfessor>('ProfesorGuia', proffesorSchema);
+export const ProfesorGuiaModel = UsuarioModel.discriminator<IGuideProfessor>('ProfesorGuia', professorSchema);
 
