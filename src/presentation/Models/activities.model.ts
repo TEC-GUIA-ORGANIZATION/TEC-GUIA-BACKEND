@@ -13,7 +13,8 @@ export enum activityStatusEnum {
     PLANEADA = 'PLANEADA',
     NOTIFICADA = 'NOTIFICADA',
     REALIZADA = 'REALIZADA',
-    CANCELADA = 'CANCELADA'
+    CANCELADA = 'CANCELADA',
+    PUBLICADA = 'PUBLICADA'
 };
 
 interface IActivity extends Document {
