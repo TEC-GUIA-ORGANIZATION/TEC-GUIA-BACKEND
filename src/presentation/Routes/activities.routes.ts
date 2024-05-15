@@ -10,6 +10,7 @@ export class ActivitiesRoute {
         const activitiesController = new ActivitiesController();
 
         router.post('/', activitiesController.createActivity); //* Crear
+        router.get('/nexActivity', activitiesController.getNextActivity); //*Obtener la siguiente actividad
         router.get('/', activitiesController.getActivities); //* Obtener por id
         router.get('/:id', activitiesController.getActivitiesById); //*Obtener todo
         router.delete('/:id', activitiesController.deleteActivity); //* Eliminar
