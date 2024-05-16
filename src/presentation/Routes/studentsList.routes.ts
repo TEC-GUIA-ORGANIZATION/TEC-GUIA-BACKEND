@@ -16,8 +16,6 @@ export class StudentsListRoutes {
         router.patch('/updateStudent/:id', studentsController.updateStudent); //* Crear
         router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); //* Crear
         router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); //* Crear
-        // router.delete('/:id', activitiesController.deleteActivity); //* Eliminar
-        // router.patch('/:id', activitiesController.updateActivity) //* Actualizar 
         router.post('/upload', upload.single('file'), studentsController.saveStudentsFromExcel);
         return router;
     }
