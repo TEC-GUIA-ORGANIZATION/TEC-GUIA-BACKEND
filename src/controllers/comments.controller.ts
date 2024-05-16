@@ -124,5 +124,16 @@ export class CommentController {
             { new: true }
         )
     }
-    
+
+    public getcommentsbyactivityid = async (req: Request, res: Response) => {
+        try {
+            const activityID = req.params.id;
+            const comments = await CommentsModel.find({
+                activityID: activityID
+            });
+            res.status(200).json(comments);
+        } catch (error) {
+            res.status(500).json({ message: error });
+        }
+    }
 }
