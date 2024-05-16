@@ -9,6 +9,8 @@ export class GuideProfesorsRoutes {
         const guideProfesorsController = new GuideProfesorsController();
 
         router.patch('/changeStatus', guideProfesorsController.changeActiveStatusProfessor); 
+        router.patch('/setCoordinator', guideProfesorsController.setCoordinator);
+
         return router;
     }
 }
