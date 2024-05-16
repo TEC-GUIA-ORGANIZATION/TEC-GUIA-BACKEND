@@ -18,15 +18,20 @@ export enum activityStatusEnum {
     PUBLICADA = 'PUBLICADA'
 };
 
+export enum activityModalityEnum {
+    PRESENCIAL = 'PRESENCIAL',
+    REMOTA = 'REMOTA'
+}
+
 export interface IActivity extends Document {
     week: number,
     date: Date,
     type: activityTypeEnum,
     name: string,
-    responsible: [mongoose.ObjectId],
+    responsible: mongoose.ObjectId,
     daysToAnnounce: number,
-    daysToRemember: [Date],
-    modality: boolean,
+    daysToRemember: number,
+    modality: activityModalityEnum,
     placeLink: string,
     poster: string,
     status: string,
@@ -59,19 +64,20 @@ const activitySchema = new mongoose.Schema<IActivity>({
         required: true,
     },
     responsible: {
-        type: [mongoose.Schema.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     daysToAnnounce: {
         type: Number,
         required: true,
     },
-    daysToRemember: [{
-        type: Date,
+    daysToRemember: {
+        type: Number,
         required: true,
-    }],
+    },
     modality: {
-        type: Boolean,
+        type: String,
+        enum: activityModalityEnum,
         required: true,
     },
     placeLink: {
