@@ -5,6 +5,7 @@ import { CommentsRoutes } from "./Routes/commets.routes";
 import { StudentsListRoutes } from "./Routes/studentsList.routes"
 import { PlanningRoutes } from "./Routes/plannings.routes";
 import { UsersRoutes } from "./Routes/users.routes";
+import { GuideProfesorsRoutes } from "./Routes/guideProfessor.router";
 
 export class AppRoutes {
 
@@ -18,6 +19,8 @@ export class AppRoutes {
         router.use('/api/studentList', StudentsListRoutes.routes);
         router.use('/api/planning', PlanningRoutes.routes);
         router.use('/api/users', UsersRoutes.routes);
+        router.use('/api/guideProfessors', GuideProfesorsRoutes.routes);
+        
 
         return router;
     }
