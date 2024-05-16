@@ -10,16 +10,15 @@ export class CommentController {
     public createComment = async (req: Request, res: Response) => {
         try {
             
-            const activityExists = await ActivityModel.exists({_id: req.body.activityID});
+            const activityExists = await ActivityModel.exists({_id: req.url.split('/')[1]});
             if(!activityExists)
                 return res.status(404).json({message: 'Activity not found'});
 
             const newComment = await CommentsModel.create({
-                activityID: req.body.activityID,
-                professor: req.body.professor,
-                message: req.body.message,
-                timestamp: req.body.timestamp,
-                parentID: req.body._id,
+                activityID: req.url.split('/')[1],
+                professor: req.body.autor.nombre + ' ' + req.body.autor.primerApellido + ' ' + req.body.autor.segundoApellido,
+                message: req.body.contenido,
+                timestamp: req.body.fechaHora
             });
             await this.addComentsToActivity(req.body.activityID, newComment._id.toString());
 
