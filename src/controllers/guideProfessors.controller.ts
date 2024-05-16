@@ -59,9 +59,11 @@ export class GuideProfesorsController {
                 { $set: { isCoordinator: false, rol: rol.PROFESOR_GUIA } }
             );
             // Set the new coordinator
-            const newCoordinator = await ProfesorGuiaModel.findByIdAndUpdate(
-                newCoordinatorId,
-                { $set: { rol: rol.COORDINADOR } },
+            const newCoordinator = await ProfesorGuiaModel.findOneAndUpdate(
+                {_id: newCoordinatorId,
+                  campus: campus
+                },
+                { $set: { isCoordinator: true, rol: rol.COORDINADOR } },
                 { new: true }
             );
             // If the new coordinator could not be set
@@ -77,13 +79,14 @@ export class GuideProfesorsController {
                     error: "Error al asignar nuevo coordinador",
                     message: "No se encontró el nuevo coordinador y el anterior ha sido restablecido."
                 });
-            } 
+            } else {
             await newCoordinator?.save();
             // Successfully updated the coordinator
             res.status(200).json({
                 message: 'Coordinador asignado correctamente',
                 newCoordinator
             });
+            }
         } catch (error) {
             console.error("Error setting coordinator:", error);
             res.status(500).json({ error: "Ocurrió un error al actualizar el coordinador" });
