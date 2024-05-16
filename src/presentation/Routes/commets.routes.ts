@@ -14,6 +14,7 @@ export class CommentsRoutes {
         router.patch('/:commentID', commentController.updateComment);
         router.patch('/:commentID', commentController.deleteComment);
         router.delete('/delete/:commentID', commentController.deleteCommentByID);
+        router.get('/:id', commentController.getcommentsbyactivityid);
         return router;
     }
 }
