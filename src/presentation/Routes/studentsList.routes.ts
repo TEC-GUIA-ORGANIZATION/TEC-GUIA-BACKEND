@@ -19,6 +19,7 @@ export class StudentsListRoutes {
         // router.delete('/:id', activitiesController.deleteActivity); //* Eliminar
         // router.patch('/:id', activitiesController.updateActivity) //* Actualizar 
         router.post('/upload', upload.single('file'), studentsController.saveStudentsFromExcel);
+        router.get('/download/:campus', studentsController.downloadStudenExcel);
         return router;
     }
 }

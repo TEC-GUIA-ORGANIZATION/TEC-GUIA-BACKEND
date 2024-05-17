@@ -16,7 +16,8 @@ export class CommentController {
 
             const newComment = await CommentsModel.create({
                 activityID: req.body.activityID,
-                professor: req.body.professor,
+                // professor: req.body.professor,
+                professor: req.body.name + " " + req.body.firstLastname + " " + req.body.secondLastname,
                 message: req.body.message,
                 timestamp: req.body.timestamp,
                 parentID: req.body._id,
