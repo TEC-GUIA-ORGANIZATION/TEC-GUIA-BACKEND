@@ -186,11 +186,11 @@ export class StudentsController {
       res.status(500).send('Error processing file.');
     }
 }
-public downloadStudenExcel = async (req: Request, res: Response) => {
+public downloadStudentExcel = async (req: Request, res: Response) => {
   const { campus } = req.params;
   console.log(campus);
   try {
-    const students = await StudentModel.find({ campus }).exec();
+    const students = await Student.find({ campus }).exec();
 
     if (students.length === 0) {
       return res.status(404).json({ message: 'No students found for the selected campus.' });
