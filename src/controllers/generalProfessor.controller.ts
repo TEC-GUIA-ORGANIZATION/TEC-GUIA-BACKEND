@@ -54,4 +54,34 @@ export class GeneralProfessorsController {
         }
     };
 
+    public updateProfessorPhoto = async (req: Request, res: Response) => {
+        const { userId } = req.query;
+        const { photoUrl} = req.body;
+        // Validate the input
+        if (!userId || !photoUrl) {
+            return res.status(400).json({ error: "Both user ID and photo URL are required." });
+        }
+
+        try {
+            // Update the photo URL for the specified user ID
+            const updated = await UsuarioModel.findByIdAndUpdate(
+                userId,
+                { photo: photoUrl },
+                { new: true }  // Returns the updated document
+            );
+
+            // Check if the document was found and updated
+            if (!updated || !this.isValidRole(updated.rol)) {
+                return res.status(404).json({ error: "Usuario no encontrado o no actualizado." });
+            } else {
+                return res.status(200).json({
+                    message: "Foto de profesor actualizada correctamente.",
+                    data: updated
+                });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: "Ocurrió un error al actualizar la foto del profesor." });
+        }
+    };
+
 }
