@@ -147,14 +147,12 @@ export class StudentsController {
 
 
   public saveStudentsFromExcel = async (req: Request, res: Response) => {
-
     const campus: ECampus = req.body.campus;
 
     if (!req.file)
       return res.status(400).send('No file uploaded');
 
     const filePath = req.file.path;
-    console.log(filePath);
 
     try {
       const workBook = xlsx.readFile(filePath);
@@ -162,7 +160,7 @@ export class StudentsController {
       const workSheet = workBook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json<any>(workSheet);
 
-      const students = data.map((student: any) => ({
+      const students: any = data.map((student: any) => ({
         password: student.password,
         name: student.name,
         firstLastname: student.firstLastname,
@@ -174,16 +172,19 @@ export class StudentsController {
         campus: campus,
         personalPhone: student.personalPhone,
         semester: student.semester,
-        entryYear: student.entryYear
-
-
+        entryYear: student.entryYear,
+        URL: '', 
       }));
 
+      // Eliminar todos los estudiantes de un campus antes de agregar los nuevos
+      await Student.deleteMany({ campus: campus });
       await Student.insertMany(students);
-      res.status(200).send('Students successfully uploaded and saved.')
+      console.log("Estudiante subido adecuadamente");
+      res.status(200).send('Estudiante subido adecuadamente.')
     } catch (error) {
       console.log(error);
       res.status(500).send('Error processing file.');
     }
-  }
+}
+
 }
