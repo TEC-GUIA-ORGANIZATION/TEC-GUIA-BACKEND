@@ -10,18 +10,18 @@ export class StudentsController {
 
   constructor() { }
   private getSemesterFromDate(date: Date): string {
-    return (date.getMonth() + 1) >= 1 && (date.getMonth() + 1 )<= 6 ? "primer semestre" :  "segundo semestre";
+    return (date.getMonth() + 1) >= 1 && (date.getMonth() + 1) <= 6 ? "primer semestre" : "segundo semestre";
   }
 
   public getCurrentFirstSemesterStudents = async (req: Request, res: Response) => {
     const semester: string = this.getSemesterFromDate(new Date()); // Corregido: Llamada correcta a la función getSemesterFromDate
     const currentYear: number = new Date().getFullYear();
-  
+
     const students = await Student.find({
       semester: semester,
       entryYear: currentYear
     });
-  
+
     return students && students.length > 0
       ? res.status(200).json(students)
       : res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' });
@@ -194,7 +194,7 @@ export class StudentsController {
         personalPhone: student.personalPhone,
         semester: student.semester,
         entryYear: student.entryYear,
-        URL: '', 
+        URL: '',
       }));
 
       // Eliminar todos los estudiantes de un campus antes de agregar los nuevos
@@ -206,44 +206,91 @@ export class StudentsController {
       console.log(error);
       res.status(500).send('Error processing file.');
     }
-}
-public downloadStudentExcel = async (req: Request, res: Response) => {
-  const { campus } = req.params;
-
-  try {
-    const students = await Student.find({ campus }).exec();
-
-    if (students.length === 0) {
-      return res.status(404).json({ message: 'No students found for the selected campus.' });
-    }
-
-    const studentData: IStudent[] = students.map((student: IStudent) => ({
-      Email: student.email,
-      Name: student.name,
-      FirstLastname: student.firstLastname,
-      SecondLastname: student.secondLastname,
-      Campus: student.campus,
-      Rol: student.rol,
-      InstitutionID: student.institutionID,
-      PersonalPhone: student.personalPhone,
-      Semester: student.semester,
-      EntryYear: student.entryYear,
-    }));
-
-    const worksheet = xlsx.utils.json_to_sheet(studentData);
-    const workbook = xlsx.utils.book_new();
-    xlsx.utils.book_append_sheet(workbook, worksheet, 'Students');
-
-    const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-
-    res.setHeader('Content-Disposition', 'attachment; filename="students.xlsx"');
-    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.send(buffer);
-  } catch (error) {
-    console.error('Error fetching students or generating Excel:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
   }
-}
+  public downloadStudentExcel = async (req: Request, res: Response) => {
+    const { campus } = req.params;
 
+    try {
+      const students = await Student.find({ campus }).exec();
+
+      if (students.length === 0) {
+        return res.status(404).json({ message: 'No students found for the selected campus.' });
+      }
+
+      const studentData: IStudent[] = students.map((student: IStudent) => ({
+        Email: student.email,
+        Name: student.name,
+        FirstLastname: student.firstLastname,
+        SecondLastname: student.secondLastname,
+        Campus: student.campus,
+        Rol: student.rol,
+        InstitutionID: student.institutionID,
+        PersonalPhone: student.personalPhone,
+        Semester: student.semester,
+        EntryYear: student.entryYear,
+      }));
+
+      const worksheet = xlsx.utils.json_to_sheet(studentData);
+      const workbook = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(workbook, worksheet, 'Students');
+
+      const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+      res.setHeader('Content-Disposition', 'attachment; filename="students.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error fetching students or generating Excel:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+  public downloadAllStudentsExcel = async (req: Request, res: Response) => {
+    try {
+      const students = await Student.find().exec();
+
+      if (students.length === 0) {
+        return res.status(404).json({ message: 'No students found.' });
+      }
+
+      // Organizar a los estudiantes por campus
+      const studentsByCampus: { [key: string]: IStudent[] } = {};
+      students.forEach((student: IStudent) => {
+        if (!studentsByCampus[student.campus]) {
+          studentsByCampus[student.campus] = [];
+        }
+        studentsByCampus[student.campus].push(student);
+      });
+
+      const workbook = xlsx.utils.book_new();
+
+      // Crear una hoja por cada campus
+      for (const campus in studentsByCampus) {
+        const studentData = studentsByCampus[campus].map((student: IStudent) => ({
+          Email: student.email,
+          Name: student.name,
+          FirstLastname: student.firstLastname,
+          SecondLastname: student.secondLastname,
+          Campus: student.campus,
+          Rol: student.rol,
+          InstitutionID: student.institutionID,
+          PersonalPhone: student.personalPhone,
+          Semester: student.semester,
+          EntryYear: student.entryYear,
+        }));
+
+        const worksheet = xlsx.utils.json_to_sheet(studentData);
+        xlsx.utils.book_append_sheet(workbook, worksheet, campus);
+      }
+
+      const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+
+      res.setHeader('Content-Disposition', 'attachment; filename="allStudents.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.send(buffer);
+    } catch (error) {
+      console.error('Error fetching students or generating Excel:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
 
 }
