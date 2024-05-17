@@ -9,8 +9,11 @@ export class PlanningRoutes {
         const planningController = new PlanningController();
 
         router.post('/', planningController.createPlanning); 
-        router.get('/', planningController.getPlannings); 
-        router.get('/getByCampus', planningController.getPlanningByCampus); 
+        router.get('/getPlanningBySemester', planningController.getPlannings); 
+        router.get('/getByCampus', planningController.getPlanningByCampus);
+        router.get('/getById', planningController.getPlanningById);
+        router.get('/getActivitiesOfPlanning', planningController.getActivitiesByPlanning); 
+        router.get('/activities/:id', planningController.getActivitiesByPlanningId);
         return router;
     }
 }
