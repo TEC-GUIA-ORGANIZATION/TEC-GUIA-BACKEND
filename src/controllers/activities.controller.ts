@@ -64,7 +64,7 @@ export class ActivitiesController {
 
     public addActivityToPlanning = async (campus: string, semester: string, activityId: mongoose.Types.ObjectId) => {
         const year = new Date().getFullYear();
-        const planning = await PlanningModel.findOne({ semester, campus, year });
+        const planning = await PlanningModel.findOne({ semester:semester, campus:campus, year:year });
 
         if (!planning) {
             throw new Error("No se pudo encontrar la planificación para el campus y semestre especificados.");
@@ -99,7 +99,7 @@ export class ActivitiesController {
         try {
             const actividadActualizada = await ActivityModel.findByIdAndUpdate(req.params.id, req.body, { new: true }); //* {new:true} permite ver el objeto json actualizado.
             return (!actividadActualizada)
-                ? res.status(404).json({ error: 'Actividad no encontrada' })
+                ? res.status(404).json({ error: 'Actividad no encontrada o no se pudo realizar la actualziacion' })
                 : res.json(actividadActualizada);
         } catch (error) {
             res.status(500).json({ error: 'Error al actualizar la actividad' });
@@ -110,12 +110,15 @@ export class ActivitiesController {
         try {
             const actividadActualizada = await ActivityModel.findByIdAndUpdate(
                 req.params.id,
-                { activityStatus: activityStatusEnum.CANCELADA },
+                { status: activityStatusEnum.CANCELADA },
                 { new: true }
             );
-            return (!actividadActualizada)
-                ? res.status(404).json({ error: 'Actividad no encontrada' })
-                : res.json(actividadActualizada);
+            if (!actividadActualizada) {
+                res.status(404).json({ error: 'Actividad no encontrada' })
+            } else {
+                await actividadActualizada.save();
+               res.json(actividadActualizada);
+            }
         } catch (error) {
             res.status(500).json({ error: 'Error al actualizar la actividad' });
         }
@@ -126,7 +129,7 @@ export class ActivitiesController {
         try {
             const actividadActualizada = await ActivityModel.findByIdAndUpdate(
                 req.params.id,
-                { activityStatus: activityStatusEnum.REALIZADA },
+                { status: activityStatusEnum.REALIZADA },
                 { new: true }
             );
             return (!actividadActualizada)

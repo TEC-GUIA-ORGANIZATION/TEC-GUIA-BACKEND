@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
 import { IPlanning, PlanningModel} from "../presentation/Models/planning.model";
+import { IActivity, ActivityModel } from "../presentation/Models/activities.model";
 
 
 // const Actividad = mongoose.model('Actividad', actividad);
@@ -44,6 +45,40 @@ export class PlanningController {
         return res.status(500).json({ error: "No se pudieron recuperar las planificaciones." });
     }
 }
+
+
+    public getNextActivity = async (req: Request, res: Response) => {
+        try {
+            const { planningId } = req.query; // Assuming you pass planningId as a query parameter
+
+            // Validate the presence of planningId
+            if (!planningId) {
+                return res.status(400).json({ error: "El parametro planningId es requerido." });
+            }
+
+            // Retrieve the specified planning document to get its activities
+            const planning = await PlanningModel.findById(planningId);
+            if (!planning || !planning.activities || planning.activities.length === 0) {
+                return res.status(404).json({ error: "Planificación no encontrada o sin actividades." });
+            }
+
+            const now = new Date();
+            const utcNow = new Date(now.toISOString());
+
+            // Find the next upcoming activity that is part of the planning
+            const actividad = await ActivityModel
+                .findOne({ _id: { $in: planning.activities }, date: { $gt: utcNow } })
+                .sort({ date: 1 })
+                .exec();
+
+            return (!actividad)
+                ? res.status(404).json({ error: 'Actividad no encontrada' })
+                : res.json(actividad);
+
+        } catch (error) {
+            return res.status(500).json({ error: "Error al recuperar la próxima actividad." });
+        }
+    };
 
 
     public getPlanningByCampus = async (req: Request, res: Response) => {
