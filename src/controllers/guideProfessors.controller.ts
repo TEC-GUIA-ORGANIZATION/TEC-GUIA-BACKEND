@@ -5,6 +5,7 @@ import { rol } from '../utils/rol.enum';
 
 export class GuideProfesorsController {
 
+    constructor () {};
 
     public changeActiveStatusProfessor = async (req: Request, res: Response) => {
         const { rol, name, firstLastname, secondLastname, email, officePhone, personalPhone, code } = req.body;
