@@ -52,7 +52,7 @@ export class ActivitiesController {
             const newActivity = new ActivityModel(req.body);
             // Guardar la actividad en la base de datos
             await newActivity.save();
-            //this.addActivityToPlanning(req.body.campus, req.body.semester, newActivity._id);
+            this.addActivityToPlanning(req.body.campus, req.body.semester, newActivity._id);
             res.status(200).json(newActivity);
         } catch (error) {
             console.error('Error al crear la actividad:', error);
