@@ -178,9 +178,10 @@ export class StudentsController {
       }));
 
       // Eliminar todos los estudiantes de un campus antes de agregar los nuevos
-      Student.deleteMany({ campus: campus });
-      Student.insertMany(students);
-      res.status(200).send('Students successfully uploaded and saved.')
+      await Student.deleteMany({ campus: campus });
+      await Student.insertMany(students);
+      console.log("Estudiante subido adecuadamente");
+      res.status(200).send('Estudiante subido adecuadamente.')
     } catch (error) {
       console.log(error);
       res.status(500).send('Error processing file.');
