@@ -15,6 +15,9 @@ export class ActivitiesRoute {
         router.get('/:id', activitiesController.getActivitiesById); //*Obtener todo
         router.delete('/:id', activitiesController.deleteActivity); //* Eliminar
         router.patch('/:id', activitiesController.updateActivity) //* Actualizar 
+        router.patch('/cancel/:id', activitiesController.cancelActivity); //* Cancelar actividad
+        router.patch('/markAsCompleted/:id', activitiesController.markActivityAsCompleted) //* Marcar como completada 
+
         return router;
     }
 }

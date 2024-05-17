@@ -14,6 +14,7 @@ export class PlanningRoutes {
         router.get('/getById', planningController.getPlanningById);
         router.get('/getActivitiesOfPlanning', planningController.getActivitiesByPlanning); 
         router.get('/activities/:id', planningController.getActivitiesByPlanningId);
+        router.get('/getNextActivity', planningController.getNextActivity);
         return router;
     }
 }
