@@ -5,6 +5,7 @@ import { rol } from '../utils/rol.enum';
 
 export class GuideProfesorsController {
 
+    constructor () {};
 
     
 
