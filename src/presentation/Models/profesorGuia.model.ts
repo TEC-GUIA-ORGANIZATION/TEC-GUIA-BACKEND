@@ -9,7 +9,7 @@ export interface IGuideProfessor extends Document, IUser {
     isActive?: boolean;
 }
 
-const professorSchema = new mongoose.Schema({
+const professorSchema = new mongoose.Schema<IGuideProfessor>({
     code: {
         type: String,
         required: true
