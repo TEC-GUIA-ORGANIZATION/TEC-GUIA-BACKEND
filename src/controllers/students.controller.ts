@@ -147,7 +147,6 @@ export class StudentsController {
 
 
   public saveStudentsFromExcel = async (req: Request, res: Response) => {
-
     const campus: ECampus = req.body.campus;
 
     if (!req.file)
@@ -162,7 +161,7 @@ export class StudentsController {
       const workSheet = workBook.Sheets[sheetName];
       const data = xlsx.utils.sheet_to_json<any>(workSheet);
 
-      const students = data.map((student: any) => ({
+      const students: any = data.map((student: any) => ({
         password: student.password,
         name: student.name,
         firstLastname: student.firstLastname,
@@ -174,16 +173,18 @@ export class StudentsController {
         campus: campus,
         personalPhone: student.personalPhone,
         semester: student.semester,
-        entryYear: student.entryYear
-
-
+        entryYear: student.entryYear,
+        URL: '', 
       }));
 
-      await Student.insertMany(students);
+      // Eliminar todos los estudiantes de un campus antes de agregar los nuevos
+      Student.deleteMany({ campus: campus });
+      Student.insertMany(students);
       res.status(200).send('Students successfully uploaded and saved.')
     } catch (error) {
       console.log(error);
       res.status(500).send('Error processing file.');
     }
-  }
+}
+
 }
