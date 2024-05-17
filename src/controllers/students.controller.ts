@@ -1,5 +1,5 @@
 import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
-import { StudentModel as Student, IStudent } from '../presentation/Models/students.model'
+import { StudentModel as Student, IStudent, StudentModel } from '../presentation/Models/students.model'
 import { campus as ECampus } from '../utils/campus.enum';
 import { Request, Response } from 'express';
 import xlsx from 'xlsx';
@@ -185,6 +185,44 @@ export class StudentsController {
       console.log(error);
       res.status(500).send('Error processing file.');
     }
-}
+  }
 
+  public downloadStudentExcel = async (req: Request, res: Response) => {
+    const { campus } = req.params;
+    try {
+      const students = await StudentModel.find({ campus }).exec();
+  
+      if (students.length === 0) {
+        return res.status(404).json({ message: 'No students found for the selected campus.' });
+      }
+  
+      const studentData: IStudent[] = students.map((student: IStudent) => ({
+        Email: student.email,
+        Name: student.name,
+        FirstLastname: student.firstLastname,
+        SecondLastname: student.secondLastname,
+        Campus: student.campus,
+        Rol: student.rol,
+        InstitutionID: student.institutionID,
+        PersonalPhone: student.personalPhone,
+        Semester: student.semester,
+        EntryYear: student.entryYear,
+      }));
+  
+      const worksheet = xlsx.utils.json_to_sheet(studentData);
+      const workbook = xlsx.utils.book_new();
+      xlsx.utils.book_append_sheet(workbook, worksheet, 'Students');
+  
+      const buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+  
+      res.setHeader('Content-Disposition', 'attachment; filename="students.xlsx"');
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+
+      res.send(buffer);
+      res.status(200).json({message: "Descarga realizada"});
+    } catch (error) {
+      console.error('Error fetching students or generating Excel:', error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
 }
