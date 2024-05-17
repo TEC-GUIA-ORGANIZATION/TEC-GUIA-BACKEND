@@ -18,7 +18,14 @@ export class CommentController {
                 activityID: req.url.split('/')[1],
                 professor: req.body.autor.nombre + ' ' + req.body.autor.primerApellido + ' ' + req.body.autor.segundoApellido,
                 message: req.body.contenido,
-                timestamp: req.body.fechaHora
+                timestamp: req.body.fechaHora,
+                parentID: req.body._id
+                //activityID: req.body.activityID,
+                // professor: req.body.professor,
+                //professor: req.body.name + " " + req.body.firstLastname + " " + req.body.secondLastname,
+                //message: req.body.message,
+                //timestamp: req.body.timestamp,
+                //parentID: req.body._id,
             });
             await this.addComentsToActivity(req.body.activityID, newComment._id.toString());
 
