@@ -21,11 +21,7 @@ export class CommentController {
                 timestamp: req.body.fechaHora,
                 parentID: req.body._id
                 //activityID: req.body.activityID,
-                // professor: req.body.professor,
-                //professor: req.body.name + " " + req.body.firstLastname + " " + req.body.secondLastname,
-                //message: req.body.message,
-                //timestamp: req.body.timestamp,
-                //parentID: req.body._id,
+
             });
             await this.addComentsToActivity(req.body.activityID, newComment._id.toString());
 

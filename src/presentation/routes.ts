@@ -8,14 +8,12 @@ import { UsersRoutes } from "./Routes/users.routes";
 import { GuideProfesorsRoutes } from "./Routes/guideProfessor.router";
 import { EvidenceRoutes } from "./Routes/evidence.routes";
 import { GeneralProfessorsRoutes } from "./Routes/generalProfessors.routes";
-import express from "express"; // Import the 'express' module
 
 export class AppRoutes {
 
     static get routes(): Router {
-        const router = express.Router(); // Create the router object using the 'express' module
+        const router = Router(); // Create the router object using the 'express' module
 
-        //router.use(express.static(path.join(__dirname, 'public'))); // Use the 'express' module to serve static files
         router.use('/api/activities', ActivitiesRoute.routes);
         router.use('/api/auth', AuthRoutes.routes);
         router.use('/api/comments', CommentsRoutes.routes);
@@ -26,10 +24,7 @@ export class AppRoutes {
         router.use('/api/evidence', EvidenceRoutes.routes);
         router.use('/api/generalProfessors', GeneralProfessorsRoutes.routes);
 
-        // router.get('*', (req, res) => {
-        //     res.sendFile(path.join(__dirname, 'public', 'index.html')); // Asegúrate de que la ruta es correcta
-        //   });
-          
+
 
         return router;
     }
