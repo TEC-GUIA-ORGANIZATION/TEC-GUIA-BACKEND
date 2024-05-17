@@ -31,7 +31,9 @@ export class GeneralProfessorsController {
     };
 
     private isValidRole(role: any): role is rol {
-        return Object.values(rol).includes(role as rol);
+        // Get all roles except for 'ESTUDIANTE'
+        const validRoles = Object.values(rol).filter(r => r !== rol.ESTUDIANTE);
+        return validRoles.includes(role as rol);
     }
     
 
