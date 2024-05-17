@@ -97,43 +97,6 @@ export class GuideProfesorsController {
     }
 
 
-    public getProfessorInfo = async (req: Request, res: Response) => {
-        const { professorId } = req.query;
-        // Validate the input
-        if (!professorId) {
-            return res.status(400).json({ error: "El id del profesor es requerido para realizar esta acción" });
-        } 
-        try {
-            // Retrieve the active professor
-            const professor = await ProfesorGuiaModel.findOne({ _id: professorId, isActive: true }); 
-            // Check if the professor exists
-            if (!professor) {
-                res.status(404).json({ error: "Profesor no encontrado" });
-            } else {
-                // Send the professor's information
-                return res.status(200).json({ message: "Info de profesor enviada correctamente", data: professor });
-            }
-        } catch (error) {
-            return res.status(500).json({ error: "Ocurrió un error al obtener la información del profesor" });
-        }
-    };
-
-        public getProfessorsFromGuideTeam = async (req: Request, res: Response) => {
-            try {
-            
-                const professors = await ProfesorGuiaModel.find({}); 
-                // Check if the professor exists
-                if (!professors) {
-                    res.status(404).json({ error: "Profesores no se encontraron" });
-                } else {
-                    // Send the professor's information
-                    return res.status(200).json({ message: "Info de profesores enviada correctamente", data: professors });
-                }
-            } catch (error) {
-                return res.status(500).json({ error: "Ocurrió un error al obtener la información de los profesores" });
-            }
-    };
-
     
 
 
