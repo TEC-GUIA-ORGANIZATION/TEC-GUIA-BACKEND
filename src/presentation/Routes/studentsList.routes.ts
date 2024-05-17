@@ -17,7 +17,7 @@ export class StudentsListRoutes {
         router.get('/getAllStudentsInPeriod', studentsController.getAllStudents); //* Crear
         router.get('/getAllStudentsInPeriodByCampus', studentsController.getAllStudentsByCampus); //* Crear
         router.post('/upload', upload.single('file'), studentsController.saveStudentsFromExcel);
-        router.get('/download/:campus', studentsController.downloadStudenExcel);
+        router.get('/download/:campus', studentsController.downloadStudentExcel);
         return router;
     }
 }
