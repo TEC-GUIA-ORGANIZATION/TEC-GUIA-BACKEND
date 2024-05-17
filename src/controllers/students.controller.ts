@@ -188,7 +188,7 @@ export class StudentsController {
 }
 public downloadStudentExcel = async (req: Request, res: Response) => {
   const { campus } = req.params;
-  console.log(campus);
+
   try {
     const students = await Student.find({ campus }).exec();
 
@@ -217,10 +217,7 @@ public downloadStudentExcel = async (req: Request, res: Response) => {
 
     res.setHeader('Content-Disposition', 'attachment; filename="students.xlsx"');
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-
-    console.log(buffer);
     res.send(buffer);
-    res.status(200).json({message: "Descarga realizada"});
   } catch (error) {
     console.error('Error fetching students or generating Excel:', error);
     res.status(500).json({ message: 'Internal Server Error' });
