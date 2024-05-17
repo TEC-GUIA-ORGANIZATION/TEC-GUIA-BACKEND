@@ -153,7 +153,6 @@ export class StudentsController {
       return res.status(400).send('No file uploaded');
 
     const filePath = req.file.path;
-    console.log(filePath);
 
     try {
       const workBook = xlsx.readFile(filePath);
