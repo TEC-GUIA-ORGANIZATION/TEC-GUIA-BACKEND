@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Document} from 'mongoose';
 import { IUser, UsuarioModel} from './usuario.model';
 import { semester } from '../../utils/semesters.enum';
 

@@ -9,6 +9,27 @@ import mongoose from 'mongoose';
 export class StudentsController {
 
   constructor() { }
+  private getSemesterFromDate(date: Date): string {
+    return (date.getMonth() + 1) >= 1 && (date.getMonth() + 1 )<= 6 ? "primer semestre" :  "segundo semestre";
+  }
+
+  public getCurrentFirstSemesterStudents = async (req: Request, res: Response) => {
+    const semester: string = this.getSemesterFromDate(new Date()); // Corregido: Llamada correcta a la función getSemesterFromDate
+    const currentYear: number = new Date().getFullYear();
+  
+    const students = await Student.find({
+      semester: semester,
+      entryYear: currentYear
+    });
+  
+    return students && students.length > 0
+      ? res.status(200).json(students)
+      : res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' });
+  }
+
+
+
+
 
   public updateStudent = async (req: Request, res: Response) => {
     const id = req.params.id;
