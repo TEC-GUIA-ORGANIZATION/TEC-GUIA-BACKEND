@@ -73,7 +73,6 @@ export class CommentController {
         await CommentsModel.deleteMany({ parentID: commentID });
         
         for (const reply of comment.children) { 
-            console.log('Hola estoy dentro de un for');
             await this.deleteCommentAndReplies(reply._id, comment); 
         }
             
