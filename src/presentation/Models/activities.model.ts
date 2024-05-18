@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-import { ObjectId } from 'mongoose';
-import { IComment, CommentsModel } from './comments.model';
+import { IComment } from './comments.model';
 
 export enum activityTypeEnum {
     ORIENTADORA = 'Orientadora',

@@ -7,21 +7,18 @@ export class GuideProfesorsController {
 
     constructor () {};
 
-    
-
     public changeActiveStatusProfessor = async (req: Request, res: Response) => {
-        const { professorId, campus } = req.body;
+        const { professorId } = req.body;
 
         // Validate required fields
-        if (!professorId || !campus) {
-            return res.status(400).json({ error: "Profesor ID y campus son requeridos" });
+        if (!professorId) {
+            return res.status(400).json({ error: "Profesor ID es requerido" });
         }
 
         try {
             // Find the professor using ID and campus
             const professorToBeActivated = await ProfesorGuiaModel.findOne({
                 _id: professorId,
-                campus
             });
 
             if (!professorToBeActivated) {
@@ -47,10 +44,9 @@ export class GuideProfesorsController {
         }
     };
 
-    
     public setCoordinator = async (req: Request, res: Response): Promise<void> => {
         const { campus, newCoordinatorId } = req.body;
-    
+
         try {
             // Find the current coordinator
             const currentCoordinator = await ProfesorGuiaModel.findOne({
@@ -65,7 +61,7 @@ export class GuideProfesorsController {
             // Set the new coordinator
             const newCoordinator = await ProfesorGuiaModel.findOneAndUpdate(
                 {_id: newCoordinatorId,
-                  campus: campus
+                    campus: campus
                 },
                 { $set: { isCoordinator: true, rol: rol.COORDINADOR } },
                 { new: true }
@@ -84,22 +80,16 @@ export class GuideProfesorsController {
                     message: "No se encontró el nuevo coordinador y el anterior ha sido restablecido."
                 });
             } else {
-            await newCoordinator?.save();
-            // Successfully updated the coordinator
-            res.status(200).json({
-                message: 'Coordinador asignado correctamente',
-                newCoordinator
-            });
+                await newCoordinator?.save();
+                // Successfully updated the coordinator
+                res.status(200).json({
+                    message: 'Coordinador asignado correctamente',
+                    newCoordinator
+                });
             }
         } catch (error) {
             console.error("Error setting coordinator:", error);
             res.status(500).json({ error: "Ocurrió un error al actualizar el coordinador" });
         } 
     }
-
-
-    
-
-
-
 }
