@@ -24,8 +24,6 @@ export class AppRoutes {
         router.use('/api/evidence', EvidenceRoutes.routes);
         router.use('/api/generalProfessors', GeneralProfessorsRoutes.routes);
 
-
-
         return router;
     }
 }

@@ -39,7 +39,7 @@ export class GeneralProfessorsController {
 
     public getProfessorsFromGuideTeam = async (req: Request, res: Response) => {
         try {
-            const allowedRoles = [rol.ADMIN, rol.COORDINADOR, rol.PROFESOR_GUIA];
+            const allowedRoles = [rol.COORDINADOR, rol.PROFESOR_GUIA];
             const professors = await UsuarioModel.find({ rol: { $in: allowedRoles } });
 
             // Check if the professor exists
