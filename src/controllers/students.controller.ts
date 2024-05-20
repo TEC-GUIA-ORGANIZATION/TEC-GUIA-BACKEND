@@ -1,10 +1,8 @@
-import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
 import { StudentModel as Student, IStudent } from '../presentation/Models/students.model'
 import { campus as ECampus } from '../utils/campus.enum';
 import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
-
 
 export class StudentsController {
 
@@ -26,10 +24,6 @@ export class StudentsController {
       ? res.status(200).json(students)
       : res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' });
   }
-
-
-
-
 
   public updateStudent = async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -53,7 +47,6 @@ export class StudentsController {
     return (!students) ? res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' })
       : res.status(200).json(students);
   }
-
 
   public getAllStudentsByCampus = async (req: Request, res: Response) => {
 
@@ -164,8 +157,6 @@ export class StudentsController {
     }
     throw new Error("Estudiante no pudo ser creado con éxito");
   }
-
-
 
   public saveStudentsFromExcel = async (req: Request, res: Response) => {
     const campus: ECampus = req.body.campus;
