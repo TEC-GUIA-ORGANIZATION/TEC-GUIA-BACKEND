@@ -3,14 +3,14 @@ import { IUser, UsuarioModel} from './usuario.model';
 import { semester } from '../../utils/semesters.enum';
 
 export interface IStudent extends Document,IUser {
-    institutionID: number;
+    institutionId: number;
     personalPhone: string;
     semester: string;
     entryYear: number;
 }
 
 const StudentSchema =  new mongoose.Schema<IStudent>({
-    institutionID: {
+    institutionId: {
         type: Number,
         required: true
     },
