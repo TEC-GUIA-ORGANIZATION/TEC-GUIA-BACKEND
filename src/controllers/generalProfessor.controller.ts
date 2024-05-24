@@ -45,9 +45,15 @@ export class GeneralProfessorsController {
                     code="LI"
                     break;
             }
-            code=code+(amountOfProfessors+1).toString();
+            if(amountOfProfessors<=8){
+                code=code+"0"+(amountOfProfessors+1).toString();
+            }
+            else{
+                code=code+(amountOfProfessors+1).toString();
+            }
+            
             // Verificar si el profesor ya existe
-            const profesorExist = await ProfesorGuiaModel.findOne({ code });
+            const profesorExist = await ProfesorGuiaModel.findOne({ email });
             if (profesorExist) {
                 return res.status(400).json({ message: "El profesor ya existe" });
             }
