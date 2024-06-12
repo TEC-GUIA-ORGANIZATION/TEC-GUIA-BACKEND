@@ -8,84 +8,7 @@ import { UsuarioModel } from "../presentation/Models/usuario.model";
 export class GeneralProfessorsController {
 
     constructor () {};
-    public createProfessor = async (req: Request, res: Response) => {
-        try {
-            const {
-                email,
-                password,
-                name,
-                firstLastname,
-                secondLastname,
-                campus,
-                photo,
-                rol,
-                userType,
-                officePhone,
-                personalPhone,
-                isCoordinator,
-                isActive
-            } = req.body;
-            const professorsCampus=await ProfesorGuiaModel.find({campus});
-            const amountOfProfessors=professorsCampus.length;
-            var code="";
-            switch(campus){
-                case "Cartago":
-                    code="CA"
-                    break;
-                case "Alajuela":
-                    code="AL"
-                    break;
-                case "San Jose":
-                    code="SJ"
-                    break;
-                case "San Carlos":
-                    code="SC"
-                    break;
-                case "Limon":
-                    code="LI"
-                    break;
-            }
-            if(amountOfProfessors<=8){
-                code=code+"0"+(amountOfProfessors+1).toString();
-            }
-            else{
-                code=code+(amountOfProfessors+1).toString();
-            }
-            
-            // Verificar si el profesor ya existe
-            const profesorExist = await ProfesorGuiaModel.findOne({ email });
-            if (profesorExist) {
-                return res.status(400).json({ message: "El profesor ya existe" });
-            }
-    
-            // Crear una nueva instancia del modelo con los datos recibidos
-            const newProfesor = new ProfesorGuiaModel({
-                email,
-                password,
-                name,
-                firstLastname,
-                secondLastname,
-                campus,
-                photo,
-                rol,
-                userType,
-                code,
-                officePhone,
-                personalPhone,
-                isCoordinator,
-                isActive
-            });
-    
-            // Guardar el nuevo profesor en la base de datos
-            await newProfesor.save();
-    
-            // Devolver el profesor creado como respuesta
-            return res.status(201).json(newProfesor);
-        } catch (error) {
-            console.error('Error al crear el profesor:', error);
-            return res.status(500).json({ message: "Profesor no pudo ser creado con éxito" });
-        }
-    }
+
     public getProfessorInfo = async (req: Request, res: Response) => {
         const { professorId } = req.query;
         // Validate the input
@@ -130,15 +53,7 @@ export class GeneralProfessorsController {
             return res.status(500).json({ error: "Ocurrió un error al obtener la información de los profesores" });
         }
     };
-    public updateProfessor = async (req: Request, res: Response) => {
-        const id = req.params.id;
-        if (!mongoose.Types.ObjectId.isValid(id))
-          return res.status(404).json({ error: 'Profesor no encontrado.' });
-        const student = await ProfesorGuiaModel.findByIdAndUpdate(id, req.body, { new: true });
-        return (!student)
-          ? res.status(400).json({ error: 'No existe el profesor' })
-          : res.status(200).json(student);
-      }
+
     public updateProfessorPhoto = async (req: Request, res: Response) => {
         const { userId } = req.query;
         const { photoUrl} = req.body;

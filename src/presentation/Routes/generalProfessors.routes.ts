@@ -12,9 +12,6 @@ export class GeneralProfessorsRoutes {
         router.get('/getProfessorInfo', generalProfessorsController.getProfessorInfo);
         router.get('/getAllProfessors', generalProfessorsController.getProfessorsFromGuideTeam);
         router.patch('/updateProfessorPhoto', generalProfessorsController.updateProfessorPhoto);
-        router.patch('/updateProfessor/:id',generalProfessorsController.updateProfessor);
-        router.post('/createProfessor',generalProfessorsController.createProfessor);
-        
         
 
 
