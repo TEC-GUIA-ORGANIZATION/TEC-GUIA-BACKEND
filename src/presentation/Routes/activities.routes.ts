@@ -4,9 +4,7 @@ import { ActivitiesController } from "../../controllers/activities.controller";
 export class ActivitiesRoute {
 
     static get routes(): Router {
-
         const router = Router();
-
         const activitiesController = new ActivitiesController();
 
         router.post('/', activitiesController.createActivity); //* Crear

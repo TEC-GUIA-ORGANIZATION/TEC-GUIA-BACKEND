@@ -1,10 +1,8 @@
-import { IUser, UsuarioModel as User } from '../presentation/Models/usuario.model';
 import { StudentModel as Student, IStudent } from '../presentation/Models/students.model'
 import { campus as ECampus } from '../utils/campus.enum';
 import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
-
 
 export class StudentsController {
 
@@ -26,10 +24,6 @@ export class StudentsController {
       ? res.status(200).json(students)
       : res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' });
   }
-
-
-
-
 
   public updateStudent = async (req: Request, res: Response) => {
     const id = req.params.id;
@@ -54,17 +48,19 @@ export class StudentsController {
       : res.status(200).json(students);
   }
 
-
   public getAllStudentsByCampus = async (req: Request, res: Response) => {
 
-    const { semester, entryYear, campus } = req.query;
-    if (!semester || !entryYear || !campus) {
-      return res.status(400).send('Semestre y año requeridos');
+    const { campus } = req.query;
+    if (!campus) {
+      return res.status(400).send('Campus requerido');
     }
+    const semester: string = this.getSemesterFromDate(new Date()); // Corregido: Llamada correcta a la función getSemesterFromDate
+    const currentYear: number = new Date().getFullYear();
+
 
     const students = await Student.find({
       semester: semester,
-      entryYear: entryYear,
+      entryYear: currentYear,
       campus: campus
     });
 
@@ -153,7 +149,7 @@ export class StudentsController {
   public createStudent = async (student: IStudent): Promise<IStudent> => {
     const studentExist = await Student.findOne({
       $or: [
-        { institutionID: student.institutionID },
+        { institutionId: student.institutionId },
         { email: student.email }
       ]
     });
@@ -164,8 +160,6 @@ export class StudentsController {
     }
     throw new Error("Estudiante no pudo ser creado con éxito");
   }
-
-
 
   public saveStudentsFromExcel = async (req: Request, res: Response) => {
     const campus: ECampus = req.body.campus;
@@ -188,7 +182,7 @@ export class StudentsController {
         secondLastname: student.secondLastname,
         photo: student.photo,
         rol: student.rol,
-        institutionID: student.institutionID,
+        institutionId: student.institutionId,
         email: student.email,
         campus: campus,
         personalPhone: student.personalPhone,
@@ -224,7 +218,7 @@ export class StudentsController {
         SecondLastname: student.secondLastname,
         Campus: student.campus,
         Rol: student.rol,
-        InstitutionID: student.institutionID,
+        institutionId: student.institutionId,
         PersonalPhone: student.personalPhone,
         Semester: student.semester,
         EntryYear: student.entryYear,
@@ -246,7 +240,13 @@ export class StudentsController {
   }
   public downloadAllStudentsExcel = async (req: Request, res: Response) => {
     try {
-      const students = await Student.find().exec();
+      const semester: string = this.getSemesterFromDate(new Date()); // Corregido: Llamada correcta a la función getSemesterFromDate
+      const currentYear: number = new Date().getFullYear();
+  
+      const students = await Student.find({
+        semester: semester,
+        entryYear: currentYear
+      }).exec();
 
       if (students.length === 0) {
         return res.status(404).json({ message: 'No students found.' });
@@ -272,7 +272,7 @@ export class StudentsController {
           SecondLastname: student.secondLastname,
           Campus: student.campus,
           Rol: student.rol,
-          InstitutionID: student.institutionID,
+          institutionId: student.institutionId,
           PersonalPhone: student.personalPhone,
           Semester: student.semester,
           EntryYear: student.entryYear,
