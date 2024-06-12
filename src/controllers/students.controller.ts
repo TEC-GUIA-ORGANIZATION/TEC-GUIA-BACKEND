@@ -123,7 +123,7 @@ export class StudentsController {
     const students = await Student.find({
       semester: semester,
       entryYear: entryYear // Assuming 'year' corresponds to 'entryYear' in your schema
-    }).sort({ institutionId: sortOrder }); // Sorting by institutionId
+    }).sort({ institutionID: sortOrder }); // Sorting by institutionId
 
     return (!students || students.length === 0)
       ? res.status(404).json({ error: 'No existen usuarios cargados en el periodo actual' })

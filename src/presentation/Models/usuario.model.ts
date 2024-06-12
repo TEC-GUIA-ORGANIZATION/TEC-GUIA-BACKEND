@@ -13,8 +13,11 @@ export interface IUser extends Document {
     campus: string;
     photo: string;
     rol: string;
+    notifications: string[];
     encryptPassword(password: string): Promise<string>;
     validatePassword(password: string): Promise<boolean>;
+    addNotification(notification: string): void;
+    getNotifactions(): string[];
 }
 
 const options: { discriminatorKey: string } = { discriminatorKey: 'userType' };
@@ -56,6 +59,10 @@ const usuarioSchema = new mongoose.Schema({
         type: String,
         enum: rol,
         required: true
+    },
+    notifications: {
+        type: [String],
+        default: []
     }
 }, options);
 
@@ -66,6 +73,14 @@ usuarioSchema.methods.encryptPassword = async (password: string): Promise<string
 
 usuarioSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
+}
+
+usuarioSchema.methods.addNotification = function (notification: string): void {
+    this.notifications.push(notification);
+}
+
+usuarioSchema.methods.getNotifactions = function (): string[] {
+    return this.notifications;
 }
 
 export const UsuarioModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
