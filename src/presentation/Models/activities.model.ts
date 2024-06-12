@@ -14,6 +14,7 @@ export enum activityStatusEnum {
     NOTIFICADA = 'NOTIFICADA',
     REALIZADA = 'REALIZADA',
     CANCELADA = 'CANCELADA',
+    PUBLICADA = 'PUBLICADA'
 };
 
 export enum activityModalityEnum {
