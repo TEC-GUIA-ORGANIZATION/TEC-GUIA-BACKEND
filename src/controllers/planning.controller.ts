@@ -123,30 +123,26 @@ export class PlanningController {
         }
     }
 
-    public getActivitiesByPlanning = async (req: Request, res: Response) => {
+    public getActivitiesByPlanning = async(req:Request, res:Response) => {
         try {
             const { semester, campus } = req.query; // Use query parameters
             const year = new Date().getFullYear();
-    
+
             if (!semester || !campus) {
                 return res.status(400).json({ error: "Los parámetros 'semester' y 'campus' son requeridos." });
             }
-    
-            const planning = await PlanningModel.findOne({ semester: semester as string, campus: campus as string, year });
-    
+
+            const planning = await PlanningModel.findOne({ semester: semester as string, campus: campus as string, year: year });
+
             if (!planning) {
                 return res.status(404).json({ error: "No se pudo encontrar la planificación para el campus y semestre especificados." });
             }
-    
-            const activities = await ActivityModel.find({ _id: { $in: planning.activities } });
-    
-            return res.json(activities);
+
+            return res.json(planning.activities);
         } catch (error) {
-            console.log(error);
             return res.status(500).json({ error: "Error al recuperar la planificación." });
         }
     }
-    
 
 
     public getActivitiesByPlanningId = async(req:Request, res:Response) => {
