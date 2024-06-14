@@ -1,24 +1,25 @@
 import { Request, Response } from "express";
-import mongoose from 'mongoose';
-import { IPlanning, PlanningModel} from "../presentation/Models/planning.model";
-import { IActivity, ActivityModel } from "../presentation/Models/activities.model";
+import { Planning } from "../models/planning.model";
+import { Activity } from "../models/activity.model";
 
-
-// const Actividad = mongoose.model('Actividad', actividad);
-
+// Planning controller class
+// This class contains methods to handle the planning
 export class PlanningController {
 
-
-    constructor () {}
-
-    public createPlanning = async (req: Request, res: Response) => {
+    /**
+     * Create a new planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new planning or error message
+     */
+    public static createPlanning = async (req: Request, res: Response) => {
         try {
             const { semester, campus } = req.body;
             const year = new Date().getFullYear();
-            const planningExists = await PlanningModel.findOne({ semester, campus, year });
-    
+            const planningExists = await Planning.findOne({ semester, campus, year });
+
             if (!planningExists) {
-                const newPlanning = new PlanningModel({ semester, campus, year });
+                const newPlanning = new Planning({ semester, campus, year });
                 await newPlanning.save();
                 return res.status(201).json(newPlanning); // Return 201 status for created resource
             } else {
@@ -28,26 +29,35 @@ export class PlanningController {
             return res.status(500).json({ error: "No se pudo crear la planificación con éxito." });
         }
     }
-    
 
-   public getPlannings = async (req: Request, res: Response) => {
-    try {
-        const { semester } = req.query; // Use query parameters instead of body
-        const year = new Date().getFullYear();
+    /**
+     * Add an activity to planning
+     * @param campus - The campus of the activity
+     * @param activityId - The activity ID to be added to the planning
+     */
+    public static getPlannings = async (req: Request, res: Response) => {
+        try {
+            const { semester } = req.query; // Use query parameters instead of body
+            const year = new Date().getFullYear();
 
-        if (!semester) {
-            return res.status(400).json({ error: "El parámetro 'semester' es requerido." });
+            if (!semester) {
+                return res.status(400).json({ error: "El parámetro 'semester' es requerido." });
+            }
+
+            const plannings = await Planning.find({ semester: semester, year: year });
+            return res.json(plannings);
+        } catch (error) {
+            return res.status(500).json({ error: "No se pudieron recuperar las planificaciones." });
         }
-
-        const plannings = await PlanningModel.find({ semester: semester, year: year });
-        return res.json(plannings);
-    } catch (error) {
-        return res.status(500).json({ error: "No se pudieron recuperar las planificaciones." });
     }
-}
 
-
-    public getNextActivity = async (req: Request, res: Response) => {
+    /**
+     * Get the next upcoming activity from a planning 
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the next activity or error message
+     */
+    public static getNextActivity = async (req: Request, res: Response) => {
         try {
             const { planningId } = req.query; // Assuming you pass planningId as a query parameter
 
@@ -57,7 +67,7 @@ export class PlanningController {
             }
 
             // Retrieve the specified planning document to get its activities
-            const planning = await PlanningModel.findById(planningId);
+            const planning = await Planning.findById(planningId);
             if (!planning || !planning.activities || planning.activities.length === 0) {
                 return res.status(404).json({ error: "Planificación no encontrada o sin actividades." });
             }
@@ -66,10 +76,10 @@ export class PlanningController {
             const utcNow = new Date(now.toISOString());
 
             // Find the next upcoming activity that is part of the planning
-            const actividad = await ActivityModel
-                .findOne({ _id: { $in: planning.activities }, date: { $gt: utcNow } })
-                .sort({ date: 1 })
-                .exec();
+            const actividad = await Activity
+            .findOne({ _id: { $in: planning.activities }, date: { $gt: utcNow } })
+            .sort({ date: 1 })
+            .exec();
 
             return (!actividad)
                 ? res.status(404).json({ error: 'Actividad no encontrada' })
@@ -80,8 +90,13 @@ export class PlanningController {
         }
     };
 
-
-    public getPlanningByCampus = async (req: Request, res: Response) => {
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
+    public static getPlanningByCampus = async (req: Request, res: Response) => {
         try {
             const { semester, campus } = req.query; // Use query parameters
             const year = new Date().getFullYear();
@@ -90,7 +105,7 @@ export class PlanningController {
                 return res.status(400).json({ error: "Los parámetros 'semester' y 'campus' son requeridos." });
             }
 
-            const planning = await PlanningModel.findOne({ semester: semester as string, campus: campus as string, year: year });
+            const planning = await Planning.findOne({ semester: semester as string, campus: campus as string, year: year });
 
             if (!planning) {
                 return res.status(404).json({ error: "No se pudo encontrar la planificación para el campus y semestre especificados." });
@@ -102,8 +117,13 @@ export class PlanningController {
         }
     }
 
-
-    public getPlanningById = async (req: Request, res: Response) => {
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
+    public static getPlanningById = async (req: Request, res: Response) => {
         try {
             const { idPlanning } = req.query; // Use query parameters
 
@@ -111,7 +131,7 @@ export class PlanningController {
                 return res.status(400).json({ error: "El parametro idPlanning es requerido." });
             }
 
-            const planning = await PlanningModel.findById(idPlanning);
+            const planning = await Planning.findById(idPlanning);
 
             if (!planning) {
                 return res.status(404).json({ error: "No se pudo encontrar la planificación para el campus y semestre especificados." });
@@ -123,7 +143,13 @@ export class PlanningController {
         }
     }
 
-    public getActivitiesByPlanning = async(req:Request, res:Response) => {
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
+    public static getActivitiesByPlanning = async(req:Request, res:Response) => {
         try {
             const { semester, campus } = req.query; // Use query parameters
             const year = new Date().getFullYear();
@@ -132,7 +158,7 @@ export class PlanningController {
                 return res.status(400).json({ error: "Los parámetros 'semester' y 'campus' son requeridos." });
             }
 
-            const planning = await PlanningModel.findOne({ semester: semester as string, campus: campus as string, year: year });
+            const planning = await Planning.findOne({ semester: semester as string, campus: campus as string, year: year });
 
             if (!planning) {
                 return res.status(404).json({ error: "No se pudo encontrar la planificación para el campus y semestre especificados." });
@@ -144,17 +170,22 @@ export class PlanningController {
         }
     }
 
-
-    public getActivitiesByPlanningId = async(req:Request, res:Response) => {
+    /**
+     * Get the activities of a planning 
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
+    public static getActivitiesByPlanningId = async(req:Request, res:Response) => {
         try {
             const { idPlanning } = req.query; // Use query parameters
-           
+
 
             if (!idPlanning) {
                 return res.status(400).json({ error: "El parámetro idPlanning es requerido" });
             }
 
-            const planning = await PlanningModel.findById(idPlanning);
+            const planning = await Planning.findById(idPlanning);
 
             if (!planning) {
                 return res.status(404).json({ error: "No se pudo encontrar la planificación para el id." });
@@ -165,8 +196,4 @@ export class PlanningController {
             return res.status(500).json({ error: "Error al recuperar la planificación." });
         }
     }
-
-
 }
-
-
