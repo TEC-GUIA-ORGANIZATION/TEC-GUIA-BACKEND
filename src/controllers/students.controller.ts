@@ -6,7 +6,7 @@ import xlsx from 'xlsx';
 import mongoose from 'mongoose';
 
 
-export class StudentsController {
+export class StudentsController{
 
   constructor() { }
   private getSemesterFromDate(date: Date): string {
@@ -223,7 +223,6 @@ export class StudentsController {
         FirstLastname: student.firstLastname,
         SecondLastname: student.secondLastname,
         Campus: student.campus,
-        Rol: student.rol,
         InstitutionID: student.institutionID,
         PersonalPhone: student.personalPhone,
         Semester: student.semester,
@@ -271,7 +270,6 @@ export class StudentsController {
           FirstLastname: student.firstLastname,
           SecondLastname: student.secondLastname,
           Campus: student.campus,
-          Rol: student.rol,
           InstitutionID: student.institutionID,
           PersonalPhone: student.personalPhone,
           Semester: student.semester,
