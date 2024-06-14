@@ -5,7 +5,7 @@ import { CommentsRoutes } from "./Routes/commets.routes";
 import { StudentsListRoutes } from "./Routes/studentsList.routes"
 import { PlanningRoutes } from "./Routes/plannings.routes";
 import { UsersRoutes } from "./Routes/users.routes";
-import { GuideProfesorsRoutes } from "./Routes/guideProfessor.router";
+import { GuideProfesorsRoutes } from "./Routes/guideProfessor.routes";
 import { EvidenceRoutes } from "./Routes/evidence.routes";
 import { GeneralProfessorsRoutes } from "./Routes/generalProfessors.routes";
 
