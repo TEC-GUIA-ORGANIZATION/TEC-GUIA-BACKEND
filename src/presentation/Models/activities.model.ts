@@ -1,5 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import { IComment } from './comments.model';
+import { Suscriptor } from './ISuscriptor';
+import { VisitorMensajes } from './IVisitorMensajes';
 
 export enum activityTypeEnum {
     ORIENTADORA = 'Orientadora',
@@ -40,7 +42,14 @@ export interface IActivity extends Document {
         participants: [String],
         recordingLink: String
     },
-    comments?: IComment[]
+    comments?: IComment[],
+    suscriptores: Suscriptor[];
+
+    acceptVisitorRecordatorio(visitanteRecordatorio: VisitorMensajes): void;
+    acceptVisitorPublicacion(visitantePublicacion: VisitorMensajes): void;
+    suscribir(suscriptor: Suscriptor): void;
+    desuscribir(suscriptor: Suscriptor): void;
+    notificarSuscriptores(): void;
 }
 
 const activitySchema = new mongoose.Schema<IActivity>({
@@ -106,8 +115,37 @@ const activitySchema = new mongoose.Schema<IActivity>({
         },
         required: true,
     },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }]
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }],
+    suscriptores: [{ 
+        type: mongoose.Schema.Types.Mixed, //
+        required: true,
+    }]
 });
+
+activitySchema.methods.acceptVisitorRecordatorio = function(visitanteRecordatorio: VisitorMensajes): void {
+    visitanteRecordatorio.visitar(this as IActivity);
+}
+
+activitySchema.methods.acceptVisitorPublicacion = function(visitantePublicacion: VisitorMensajes): void {
+    visitantePublicacion.visitar(this as IActivity);
+}
+
+activitySchema.methods.suscribir = function(suscriptor: Suscriptor): void {
+    this.suscriptores.push(suscriptor);
+}
+
+activitySchema.methods.desuscribir = function(suscriptor: Suscriptor): void {
+    this.suscriptores = this.suscriptores.filter((s: Suscriptor) => s !== suscriptor);
+}
+
+activitySchema.methods.notificarSuscriptores = function(): void {
+    this.suscriptores.forEach((s: Suscriptor) => {
+        if (typeof s.update === 'function') {
+            s.update(this);
+        }
+    });
+}
+
 
 export const ActivityModel = mongoose.model('Actividades', activitySchema);
 
