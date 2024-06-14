@@ -1,25 +1,29 @@
-import { envs } from "./config/envs";
-import { Server } from "./presentation/server";
-import { AppRoutes } from "./presentation/routes";
-import { MongoDatabase } from "./data/mongo/init";
+// app.ts
 
-(async()=> {
-    main();
-})();
+import express, { Application } from 'express';
+import { corsMiddleware } from './middlewares/cors.middleware';
+import routes from './app.routes';
+import { mongoConnect } from './config/mongo';
+import * as APP_CONFIG from './app.config';
 
-async function main() {
+// Connect to MongoDB
+mongoConnect();
 
-    await MongoDatabase.connect({
-        mongoUrl: envs.MONGO_URI(),
-        // dbName: envs.MONGO_DB_NAME(),
-    });
-    
-    const server = new Server(
-        {
-            port: envs.PORT,
-            public_path: envs.PUBLIC_PATH,
-            routes: AppRoutes.routes,
-        });
+// Create express app
+const app: Application = express();
 
-    server.start();
-}
+// Enable CORS
+app.use(corsMiddleware);
+
+app.use(express.json()); // application/json
+app.use(express.urlencoded({ extended: true })); // x-www-form-urlencoded
+
+// Static files
+app.use(express.static(APP_CONFIG.APP.public_path));
+
+// Set routes
+app.use(routes);
+
+app.listen(APP_CONFIG.APP.port, () => {
+    console.log(`Server running on port ${APP_CONFIG.APP.port}`);
+})
