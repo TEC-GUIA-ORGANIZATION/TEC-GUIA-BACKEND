@@ -5,8 +5,15 @@ import { GuideProfessor } from '../models/guide-professor.model';
 import { User } from '../models/user.model';
 import { Role } from '../enums/role.enum';
 
+// Professor controller class
+// This class contains methods to handle the professors
 export class ProfessorController {
 
+    /**
+     * Get professor information
+     * @param req - Express Request object
+     * @param res - Express Response object
+     */
     public static getProfessorInfo = async (req: Request, res: Response) => {
         const { professorId } = req.query;
         // Validate the input
@@ -28,12 +35,22 @@ export class ProfessorController {
         }
     };
 
+    /**
+     * Check if the role is valid 
+     * @param role - The role to be checked
+     * @returns True if the role is valid, false otherwise
+     */
     private static isValidRole(role: any): role is Role {
         // Get all roles except for 'ESTUDIANTE'
         const validRoles = Object.values(Role).filter(r => r !== Role.ESTUDIANTE);
         return validRoles.includes(role as Role);
     }
 
+    /**
+     * Get all professors from the guide team
+     * @param req - Express Request object
+     * @param res - Express Response object
+     */
     public static getProfessorsFromGuideTeam = async (req: Request, res: Response) => {
         try {
             const allowedRoles = [Role.COORDINADOR, Role.PROFESOR_GUIA];
@@ -51,6 +68,11 @@ export class ProfessorController {
         }
     };
 
+    /**
+     * Update professor information
+     * @param req - Express Request object
+     * @param res - Express Response object
+     */
     public static updateProfessorPhoto = async (req: Request, res: Response) => {
         const { userId } = req.query;
         const { photoUrl} = req.body;
@@ -81,6 +103,11 @@ export class ProfessorController {
         }
     };
 
+    /**
+     * Change the active status of a professor
+     * @param req - Express Request object
+     * @param res - Express Response object
+     */
     public static changeActiveStatusProfessor = async (req: Request, res: Response) => {
         const { professorId } = req.body;
 
@@ -118,6 +145,11 @@ export class ProfessorController {
         }
     };
 
+    /**
+     * Set a professor as coordinator
+     * @param req - Express Request object
+     * @param res - Express Response object
+     */
     public static setCoordinator = async (req: Request, res: Response): Promise<void> => {
         const { campus, newCoordinatorId } = req.body;
 

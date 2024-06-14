@@ -8,12 +8,16 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AUTH } from '../app.config';
 
+// Authenticable interface
+// This interface is used to handle the authentication
 export interface IAuthenticable extends Document {
     signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
 }
 
+// Authenticable Wrapper interface 
+// This interface defines the structure of an authenticable wrapper
 export interface IAuthenticableWrapper extends Document, IAuthenticable {
     student: IStudent;
     password: string;
@@ -26,6 +30,8 @@ export interface IAuthenticableWrapper extends Document, IAuthenticable {
 
 }
 
+// Authenticable Wrapper schema 
+// This schema defines the structure of an authenticable wrapper
 const AuthenticableWrapperSchema = new mongoose.Schema({
     student: {
         type: mongoose.Schema.Types.ObjectId, ref: 'Students',
@@ -42,14 +48,18 @@ const AuthenticableWrapperSchema = new mongoose.Schema({
     }
 });
 
+// Encrypt password method
 AuthenticableWrapperSchema.methods.encryptPassword = async (password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 };
 
+// Validate password method
 AuthenticableWrapperSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
 }
+
+// Sign up method
 AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Response) {
         
     const emailExist = await this.findOne({ email: req.body.email });
@@ -68,6 +78,7 @@ AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Re
     }
 }
 
+// Sign in method
 AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Response) {
     const user = await this.findOne({ email: req.body.email });
     if (!user) return res.status(400).json('El email no es válido.');
@@ -85,6 +96,7 @@ AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Re
     console.log(req.body);
 }
 
+// Profile method
 AuthenticableWrapperSchema.methods.profile = async function(req: Request, res: Response) {
     const user = await this.findById(req.userId);
     if(!user) 
@@ -93,6 +105,7 @@ AuthenticableWrapperSchema.methods.profile = async function(req: Request, res: R
     res.json(user);
 }
 
+// Assign rol method
 AuthenticableWrapperSchema.methods.assignRol = async function(req: Request, res: Response) {
     let newUser: IAuthenticableWrapper;
     newUser = new AuthenticableWrapper(req.body);

@@ -3,8 +3,16 @@
 import { Request, Response } from 'express';
 import { Activity } from '../models/activity.model';
 
+// Evidence controller class
+// This class contains methods to handle the evidence
 export class EvidenceController {
 
+    /**
+     * Create a new evidence of record for an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new evidence or error message
+     */
     public static record = async (req: Request, res: Response) => {
         try {
             const activity = await Activity.findById(req.params.activityId);
@@ -25,6 +33,12 @@ export class EvidenceController {
         }
     }
 
+    /**
+     * Create a new evidence of attendance for an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new evidence or error message
+     */
     public static attendance = async (req: Request, res: Response) => {
         try {
             const activity = await Activity.findById(req.params.activityId);
@@ -45,6 +59,12 @@ export class EvidenceController {
         }
     }
 
+    /**
+     * Create a new evidence of participants for an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new evidence or error message
+     */
     public static participants = async (req: Request, res: Response) => {
         try {
             const activity = await Activity.findById(req.params.activityId);
@@ -65,6 +85,12 @@ export class EvidenceController {
         }
     }
 
+    /**
+     * Delete an attendance record from an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the updated activity or error message
+     */
     public static deleteAttendance = async (req: Request, res: Response) => {
         try {
             const { activityId, position } = req.params;
@@ -90,6 +116,12 @@ export class EvidenceController {
         }
     }
 
+    /**
+     * Delete a participant record from an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the updated activity or error message
+     */
     public static deleteParticipant = async (req: Request, res: Response) => {
         try {
             const { activityId, position } = req.params;

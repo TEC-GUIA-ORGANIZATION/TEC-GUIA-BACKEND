@@ -5,8 +5,16 @@ import { IComment, Comment } from '../models/comment.model';
 import { Activity } from '../models/activity.model';
 import mongoose from 'mongoose';
 
+// Comments controller class
+// This class contains methods to handle the comments
 export class CommentController {
 
+    /**
+     * Create a new comment for an activity
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new comment or error message
+     */
     public static createComment = async (req: Request, res: Response) => {
         try {
 
@@ -31,6 +39,12 @@ export class CommentController {
         }
     }
 
+    /**
+     * Update a comment 
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the updated comment or error message
+     */
     public static updateComment = async (req: Request, res: Response) => {
         try {
             const commentID  = req.params.commentID;
@@ -46,7 +60,13 @@ export class CommentController {
         }
     }
 
-    // Reddit Style
+    /**
+     * Delete a comment 
+     * Using a soft delete, the comment is not removed from the database, but its message is updated to "Comentario eliminado"
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the deleted comment or error message
+     */
     public static deleteComment = async (req: Request, res: Response) => {
         try {
             const commentID  = req.params.commentID;
@@ -62,7 +82,11 @@ export class CommentController {
         }
     }
 
-    //Delete everything
+    /**
+     * Delete a comment and its replies
+     * @param commentID - ID of the comment to be deleted
+     * @param comment - Comment object to be deleted
+     */
     public static deleteCommentAndReplies = async (commentID: mongoose.Types.ObjectId, comment: IComment) => {
 
         const deletedComment = await Comment.findByIdAndDelete(commentID);
@@ -78,6 +102,12 @@ export class CommentController {
 
     }
 
+    /**
+     * Delete a comment by ID
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with success or error message
+     */
     public static deleteCommentById = async (req: Request, res: Response) => {
         try {
             const comment = await Comment.findById(req.params.commentID);
@@ -92,7 +122,12 @@ export class CommentController {
         }
     }
 
-
+    /**
+     * Reply to a comment
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the new reply or error message
+     */
     public static replyToComment = async (req: Request, res: Response) => {
 
         try {
@@ -118,6 +153,11 @@ export class CommentController {
         }
     }
 
+    /**
+     * Add a comment to an activity
+     * @param activityId - ID of the activity
+     * @param commentID - ID of the comment
+     */
     public static addComentsToActivity = async (activityId: string, commentID: string) => {
         await Activity.findByIdAndUpdate(
             activityId,
@@ -126,6 +166,12 @@ export class CommentController {
         )
     }
 
+    /**
+     * Get all comments of an activity
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the comments or error message
+     */
     public static getCommentsByActivityId = async (req: Request, res: Response) => {
         try {
             const activityID = req.params.id;

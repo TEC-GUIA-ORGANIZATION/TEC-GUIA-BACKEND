@@ -11,10 +11,17 @@ interface IPayload {
     iat: number;
 } 
 
+// Authentication controller class
+// This class contains methods to handle the authentication
 export class AuthController{
     
+    /**
+     * User registration endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
     public static async signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
-        
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });   
         const emailExistUser = await User.findOne({ email: req.body.email });
         if (emailExistsAuthWrapper || emailExistUser) {
@@ -27,11 +34,15 @@ export class AuthController{
             } catch (error) {
                 res.status(400).json({ error: error });
             }
-            
-            
         }
     }
 
+    /**
+     * User login endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
     public static async signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });
         const emailExistUser = await User.findOne ({ email: req.body.email });
@@ -46,6 +57,12 @@ export class AuthController{
         }
     }
 
+    /**
+     * User profile endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the user profile or error message
+     */
     public static async profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {  
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });
         const emailExistUser = await User.findOne ({ email: req.body.email });
@@ -60,6 +77,12 @@ export class AuthController{
         }
     }
 
+    /**
+     * User validation endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
     public static async validateToken(req: Request, res: Response, next: NextFunction) {
         try {
             const token = req.header('auth-token');
