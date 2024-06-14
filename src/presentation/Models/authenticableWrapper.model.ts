@@ -1,27 +1,15 @@
+import { rol } from '../../utils/rol.enum';
+import { IStudent } from './students.model';
 import mongoose, {Document} from 'mongoose';
-import {campus as CampusEnum } from '../../utils/campus.enum'
-import {rol } from '../../utils/rol.enum';
+import bcrypt from 'bcrypt';
 import { IAuthenticable } from './authenticable.interface';
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
-
-
-import { AdminAssistantModel as AdminUser } from './asistenteAdministrador.model';
-import { ProfesorGuiaModel as ProfesorUser } from './profesorGuia.model';
 import jwt from 'jsonwebtoken';
 import { envs } from "../../config/envs";
 
-
-
-
-export interface IUser extends Document, IAuthenticable{
-    email: string;
+export interface IAuthenticableWrapper extends Document, IAuthenticable {
+    student: IStudent;
     password: string;
-    name: string;
-    firstLastname: string;
-    secondLastname: string;
-    campus: string;
-    photo: string;
     rol: string;
     encryptPassword(password: string): Promise<string>;
     validatePassword(password: string): Promise<boolean>;
@@ -31,58 +19,32 @@ export interface IUser extends Document, IAuthenticable{
 
 }
 
-const options: { discriminatorKey: string } = { discriminatorKey: 'userType' };
-
-
-const usuarioSchema = new mongoose.Schema({
-    email: {
-        type: String,
-        required: true,
-        //match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'], 
-        lowercase: true
+const AuthenticableWrapperSchema = new mongoose.Schema({
+    student: {
+        type: mongoose.Schema.Types.ObjectId, ref: 'Students',
+        required: false
     },
     password: {
         type: String,
         required: true
-    },
-    name: {
-        type: String,
-        required: true
-    },
-    firstLastname: {
-        type: String,
-        required: true
-    },
-    secondLastname: {
-        type: String,
-        required: true
-    },
-    campus: {
-        type: String,
-        enum: CampusEnum,
-        required: true
-    },
-    photo: {
-        type: String,
-        required: false
     },
     rol: {
         type: String,
         enum: rol,
         required: true
     }
-}, options);
+    
+});
 
-usuarioSchema.methods.encryptPassword = async (password: string): Promise<string> => {
+AuthenticableWrapperSchema.methods.encryptPassword = async (password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 };
 
-usuarioSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
+AuthenticableWrapperSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
 }
-
-usuarioSchema.methods.signUp = async function(req: Request, res: Response) {
+AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Response) {
         
     const emailExist = await this.findOne({ email: req.body.email });
     if (emailExist) return res.status(400).json('Correo ya existe');
@@ -100,7 +62,7 @@ usuarioSchema.methods.signUp = async function(req: Request, res: Response) {
     }
 }
 
-usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
+AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Response) {
     const user = await this.findOne({ email: req.body.email });
     if (!user) return res.status(400).json('El email no es válido.');
 
@@ -117,7 +79,7 @@ usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
     console.log(req.body);
 }
 
-usuarioSchema.methods.profile = async function(req: Request, res: Response) {
+AuthenticableWrapperSchema.methods.profile = async function(req: Request, res: Response) {
     const user = await this.findById(req.userId);
     if(!user) 
         return res.status(404).json('Usuario no encontrado');
@@ -125,14 +87,12 @@ usuarioSchema.methods.profile = async function(req: Request, res: Response) {
     res.json(user);
 }
 
-usuarioSchema.methods.assignRol = async function(req: Request, res: Response) {
-    let newUser: IUser;
-    (req.body.rol === rol.PROFESOR_GUIA) 
-    ? newUser = new ProfesorUser(req.body) 
-    : newUser = new AdminUser(req.body);
+AuthenticableWrapperSchema.methods.assignRol = async function(req: Request, res: Response) {
+    let newUser: IAuthenticableWrapper;
+    newUser = new AuthenticableWrapperModel(req.body);
 
     newUser.password = await newUser.encryptPassword(newUser.password);
-    return newUser;
-} 
 
-export const UsuarioModel = mongoose.model<IUser>('Usuarios', usuarioSchema);
+    return newUser;
+}
+export const AuthenticableWrapperModel = mongoose.model<IAuthenticableWrapper>('AuthenticableWrapper', AuthenticableWrapperSchema);
