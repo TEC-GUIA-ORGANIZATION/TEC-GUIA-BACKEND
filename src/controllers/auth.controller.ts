@@ -1,17 +1,27 @@
-import { IUser, UsuarioModel as User, UsuarioModel } from '../presentation/Models/usuario.model';
-import { IAuthenticable } from '../presentation/Models/authenticable.interface';
-import { IAuthenticableWrapper,AuthenticableWrapperModel as AuthenticableWrapper } from '../presentation/Models/authenticableWrapper.model';
-import jwt from 'jsonwebtoken';
-import { AdminAssistantModel as AdminUser } from '../presentation/Models/asistenteAdministrador.model';
-import { ProfesorGuiaModel as ProfesorUser } from '../presentation/Models/profesorGuia.model';
-import { Request, Response } from 'express';
-import { envs } from "../config/envs";
-import { rol } from "../utils/rol.enum";
+// auth.controller.ts
 
+import { User } from '../models/user.model';
+import { IAuthenticable } from '../models/student-wrapper.model';
+import { AuthenticableWrapper } from '../models/student-wrapper.model';
+import { NextFunction, Request, Response } from 'express';
+import jwt  from 'jsonwebtoken';
+
+interface IPayload {
+    _id: string;
+    iat: number;
+} 
+
+// Authentication controller class
+// This class contains methods to handle the authentication
 export class AuthController{
     
-    async signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
-        
+    /**
+     * User registration endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
+    public static async signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });   
         const emailExistUser = await User.findOne({ email: req.body.email });
         if (emailExistsAuthWrapper || emailExistUser) {
@@ -24,11 +34,16 @@ export class AuthController{
             } catch (error) {
                 res.status(400).json({ error: error });
             }
-            
-            
         }
     }
-    async signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
+
+    /**
+     * User login endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
+    public static async signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });
         const emailExistUser = await User.findOne ({ email: req.body.email });
         if (emailExistsAuthWrapper) {
@@ -41,7 +56,14 @@ export class AuthController{
             return res.status(400).json('Correo no existe');
         }
     }
-    async profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {  
+
+    /**
+     * User profile endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the user profile or error message
+     */
+    public static async profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {  
         const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });
         const emailExistUser = await User.findOne ({ email: req.body.email });
         if (emailExistsAuthWrapper) {
@@ -55,5 +77,21 @@ export class AuthController{
         }
     }
 
-
+    /**
+     * User validation endpoint
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with success or error message
+     */
+    public static async validateToken(req: Request, res: Response, next: NextFunction) {
+        try {
+            const token = req.header('auth-token');
+            if (!token) return res.status(401).json('Access Denied');
+            const payload = jwt.verify(token, process.env['TOKEN_SECRET'] || 'testToken') as IPayload;
+            req.userId = payload._id;
+            next();
+        } catch (e) {
+            res.status(400).send('Invalid Token');
+        }
+    }
 }
