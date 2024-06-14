@@ -3,6 +3,7 @@
 import mongoose, {Document} from 'mongoose';
 import { IUser, User } from './user.model';
 
+// Guide Professor interface
 export interface IGuideProfessor extends Document, IUser {
     code: string;
     officePhone: string;
@@ -10,6 +11,8 @@ export interface IGuideProfessor extends Document, IUser {
     isActive?: boolean;
 }
 
+// Guide Professor schema
+// This schema defines the structure of a guide professor
 const professorSchema = new mongoose.Schema<IGuideProfessor>({
     code: {
         type: String,

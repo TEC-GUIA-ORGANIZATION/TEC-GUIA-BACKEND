@@ -6,12 +6,26 @@ import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
 
+// Student controller class
+// This class contains methods to handle the students
 export class StudentController{
 
+    /**
+     * Get the current semester students
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the students or error message
+     */
     private static getSemesterFromDate(date: Date): string {
         return (date.getMonth() + 1) >= 1 && (date.getMonth() + 1) <= 6 ? "primer semestre" : "segundo semestre";
     }
 
+    /**
+     * Get the current semester students 
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message
+     */
     public static getCurrentFirstSemesterStudents = async (req: Request, res: Response) => {
         const semester: string = StudentController.getSemesterFromDate(new Date());
         const currentYear: number = new Date().getFullYear();
@@ -26,6 +40,12 @@ export class StudentController{
             : res.status(400).json({ error: 'No existen usuarios cargados en el periodo actual' });
     }
 
+    /**
+     * Update a student
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new student or error message
+     */
     public static updateStudent = async (req: Request, res: Response) => {
         const id = req.params.id;
         if (!mongoose.Types.ObjectId.isValid(id))
@@ -49,6 +69,12 @@ export class StudentController{
             : res.status(200).json(students);
     }
 
+    /**
+     * Get all students by campus 
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static getAllStudentsByCampus = async (req: Request, res: Response) => {
 
         const { semester, entryYear, campus } = req.query;
@@ -69,6 +95,12 @@ export class StudentController{
 
     };
 
+    /**
+     * Get all students by campus 
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static uploadStudentList = async (req: Request, res: Response) => {
         const { studentsList } = req.body;
         let savedStudents: IStudent[] = [];
@@ -86,6 +118,12 @@ export class StudentController{
             : res.status(200).json(savedStudents);
     }
 
+    /**
+     * Get all students by campus 
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static getAllStudentsOrderByCampus = async (req: Request, res: Response) => {
         const { semester, entryYear, order = 'asc' } = req.query; // Added 'order' with default value 'asc'
 
@@ -105,6 +143,12 @@ export class StudentController{
             : res.status(200).json(students);
     }
 
+    /**
+     * Get all students by institutionId
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static getAllStudentsOrderByInstitutionId = async (req: Request, res: Response) => {
         const { semester, entryYear, order = 'asc' } = req.query; // Added 'order' with default value 'asc'
 
@@ -124,6 +168,12 @@ export class StudentController{
             : res.status(200).json(students);
     }
 
+    /**
+     * Get all students by name
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static getAllStudentsOrderByName = async (req: Request, res: Response) => {
         const { semester, entryYear, order = 'asc' } = req.query; // 'order' determines if sorting is ascending or descending
 
@@ -143,6 +193,12 @@ export class StudentController{
                     : res.status(200).json(students);
     }
 
+    /**
+     * Create a new student
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static createStudent = async (student: IStudent): Promise<IStudent> => {
         const studentExist = await Student.findOne({
             $or: [
@@ -158,6 +214,12 @@ export class StudentController{
         throw new Error("Estudiante no pudo ser creado con éxito");
     }
 
+    /**
+     * Save students from an Excel file
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static saveStudentsFromExcel = async (req: Request, res: Response) => {
         const campus: Campus = req.body.campus;
 
@@ -199,6 +261,12 @@ export class StudentController{
         }
     }
 
+    /**
+     * Download students as an Excel file
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static downloadStudentExcel = async (req: Request, res: Response) => {
         const { campus } = req.params;
 
@@ -236,6 +304,12 @@ export class StudentController{
         }
     }
 
+    /**
+     * Download all students as an Excel file
+     * @param req - Express Request object 
+     * @param res - Express Response object 
+     * @returns Response object with the students or error message 
+     */
     public static downloadAllStudentsExcel = async (req: Request, res: Response) => {
         try {
             const students = await Student.find().exec();

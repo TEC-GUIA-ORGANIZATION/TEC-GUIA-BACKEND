@@ -2,8 +2,16 @@ import { Request, Response } from "express";
 import { Planning } from "../models/planning.model";
 import { Activity } from "../models/activity.model";
 
+// Planning controller class
+// This class contains methods to handle the planning
 export class PlanningController {
 
+    /**
+     * Create a new planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the new planning or error message
+     */
     public static createPlanning = async (req: Request, res: Response) => {
         try {
             const { semester, campus } = req.body;
@@ -22,6 +30,11 @@ export class PlanningController {
         }
     }
 
+    /**
+     * Add an activity to planning
+     * @param campus - The campus of the activity
+     * @param activityId - The activity ID to be added to the planning
+     */
     public static getPlannings = async (req: Request, res: Response) => {
         try {
             const { semester } = req.query; // Use query parameters instead of body
@@ -38,6 +51,12 @@ export class PlanningController {
         }
     }
 
+    /**
+     * Get the next upcoming activity from a planning 
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the next activity or error message
+     */
     public static getNextActivity = async (req: Request, res: Response) => {
         try {
             const { planningId } = req.query; // Assuming you pass planningId as a query parameter
@@ -71,6 +90,12 @@ export class PlanningController {
         }
     };
 
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
     public static getPlanningByCampus = async (req: Request, res: Response) => {
         try {
             const { semester, campus } = req.query; // Use query parameters
@@ -92,6 +117,12 @@ export class PlanningController {
         }
     }
 
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
     public static getPlanningById = async (req: Request, res: Response) => {
         try {
             const { idPlanning } = req.query; // Use query parameters
@@ -112,6 +143,12 @@ export class PlanningController {
         }
     }
 
+    /**
+     * Get the activities of a planning
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
     public static getActivitiesByPlanning = async(req:Request, res:Response) => {
         try {
             const { semester, campus } = req.query; // Use query parameters
@@ -133,6 +170,12 @@ export class PlanningController {
         }
     }
 
+    /**
+     * Get the activities of a planning 
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the activities or error message
+     */
     public static getActivitiesByPlanningId = async(req:Request, res:Response) => {
         try {
             const { idPlanning } = req.query; // Use query parameters

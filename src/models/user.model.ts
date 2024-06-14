@@ -9,6 +9,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AUTH } from '../app.config';
 
+// User interface
+// This interface defines the structure of a user
 export interface IUser extends Document, IAuthenticable{
     email: string;
     password: string;
@@ -29,6 +31,7 @@ export interface IUser extends Document, IAuthenticable{
 
 const options: { discriminatorKey: string } = { discriminatorKey: 'userType' };
 
+// User schema
 const usuarioSchema = new mongoose.Schema({
     email: {
         type: String,
@@ -68,15 +71,18 @@ const usuarioSchema = new mongoose.Schema({
     }
 }, options);
 
+// Encrypt password method
 usuarioSchema.methods.encryptPassword = async (password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 };
 
+// Validate password method
 usuarioSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
 }
 
+// Sign up method
 usuarioSchema.methods.signUp = async function(req: Request, res: Response) {
         
     const emailExist = await this.findOne({ email: req.body.email });
@@ -95,6 +101,7 @@ usuarioSchema.methods.signUp = async function(req: Request, res: Response) {
     }
 }
 
+// Sign in method
 usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
     const user = await this.findOne({ email: req.body.email });
     if (!user) return res.status(400).json('El email no es válido.');
@@ -112,6 +119,7 @@ usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
     console.log(req.body);
 }
 
+// Profile method
 usuarioSchema.methods.profile = async function(req: Request, res: Response) {
     const user = await this.findById(req.userId);
     if(!user) 
@@ -120,6 +128,7 @@ usuarioSchema.methods.profile = async function(req: Request, res: Response) {
     res.json(user);
 }
 
+// Assign rol method
 usuarioSchema.methods.assignRol = async function(req: Request, res: Response) {
     const { GuideProfessor } = await import('./guide-professor.model');
     const { AdminAssistant } = await import('./admin-assistant.model');

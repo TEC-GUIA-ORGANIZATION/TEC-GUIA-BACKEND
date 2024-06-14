@@ -11,9 +11,6 @@ export const APP = {
 // MongoDB Configuration
 export const MONGO_DB = {
     uri: env.MONGO_URI,
-    // db_name: env.MONGO_DB_NAME,
-    // user: env.MONGO_USER,
-    // password: env.MONGO_PASS,
 };
 
 // Cross Domain Configuration
