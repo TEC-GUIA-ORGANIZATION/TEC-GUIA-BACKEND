@@ -5,7 +5,7 @@ import { Campus } from '../enums/campus.enum';
 import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
-import { AuthenticableWrapper,IAuthenticableWrapper } from '../models/student-wrapper.model';
+import { AuthenticableWrapper,IAuthenticableWrapper, encryptPassword } from '../models/student-wrapper.model';
 
 // Student controller class
 // This class contains methods to handle the students
@@ -71,15 +71,6 @@ export class StudentController{
     }
 
     /**
-     * Upload a list of students
-     * @param req - Express Request object 
-     * @param res - Express Response object 
-     * @returns Response object with the students or error message 
-     */
-
-
-
-    /**
      * Create a new student
      * @param req - Express Request object 
      * @param res - Express Response object 
@@ -98,7 +89,7 @@ export class StudentController{
                 const newStudent = new Student(student);
                 const newStudentWrapper = new AuthenticableWrapper({
                     student: newStudent,
-                    password: student.institutionID,
+                    password: encryptPassword(student.institutionID.toString()),
                     rol: "estudiante"
                 });
                 await newStudent.save();
