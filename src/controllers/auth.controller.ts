@@ -1,9 +1,9 @@
 // auth.controller.ts
 
 import { User } from '../models/user.model';
-import { IAuthenticable } from '../models/student-wrapper.model';
-import { AuthenticableWrapper } from '../models/student-wrapper.model';
-import { NextFunction, Request, Response } from 'express';
+import { Student } from '../models/student.model';
+import { IAuthenticable, AuthenticableWrapper } from '../models/student-wrapper.model';
+import { Request, Response } from 'express';
 import jwt  from 'jsonwebtoken';
 
 interface IPayload {
@@ -44,15 +44,20 @@ export class AuthController{
      * @returns Response object with success or error message
      */
     public static async signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
-        const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ email: req.body.email });
-        const emailExistUser = await User.findOne ({ email: req.body.email });
+        const emailExistsStudent = await Student.findOne({ email: req.body.email });
+        const emailExistUser = await User.findOne({ email: req.body.email });
 
         if (emailExistUser) {
             return emailExistUser.schema.methods.signIn(req, res);
         }
 
-        if (emailExistsAuthWrapper) {
-            return emailExistsAuthWrapper.schema.methods.signIn(req, res);
+        if (emailExistsStudent) {
+            let emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ student: emailExistsStudent._id });
+            if (emailExistsAuthWrapper) {
+                return emailExistsAuthWrapper.schema.methods.signIn(req, res);
+            }
+
+            return res.status(400).json('Estudiante no tiene cuenta');
         }
 
         return res.status(400).json('Correo no existe');
