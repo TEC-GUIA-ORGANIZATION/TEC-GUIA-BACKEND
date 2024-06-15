@@ -3,11 +3,10 @@
 import mongoose, { Document } from 'mongoose';
 import { Request, Response } from 'express';
 import { Role } from '../enums/role.enum';
-import { IStudent } from '../models/student.model';
+import { IStudent, Student } from '../models/student.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AUTH } from '../app.config';
-import { AuthController } from '../controllers/auth.controller';
 
 // Authenticable interface
 // This interface is used to handle the authentication
@@ -69,8 +68,11 @@ const validatePassword = async function (password: string, encryptedPassword: st
 
 // Sign up method
 AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Response) {
-    const emailExist = await AuthenticableWrapper.findOne({ email: req.body.email });
-    if (emailExist) return res.status(400).json('Correo ya existe');
+    const emailExistsStudent = await Student.findOne({ email: req.body.email });
+    if (!emailExistsStudent) return res.status(400).json('Estudiante no existe');
+
+    const emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ student: emailExistsStudent._id });
+    if (emailExistsAuthWrapper) return res.status(400).json('Estudiante ya tiene cuenta');
 
     try {
         const savedUser = await assignRole(req, res);
@@ -87,8 +89,11 @@ AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Re
 
 // Sign in method
 AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Response) {
-    const user = await AuthenticableWrapper.findOne({ email: req.body.email });
-    if (!user) return res.status(400).json('El email no es válido.');
+    const student = await Student.findOne({ email: req.body.email });
+    if (!student) return res.status(400).json('Correo no existe');
+
+    const user = await AuthenticableWrapper.findOne({ student: student._id });
+    if (!user) return res.status(400).json('Estudiante no tiene cuenta');
 
     const correctPassword: boolean = await validatePassword(req.body.password, user.password);
     if (!correctPassword) return res.status(400).json('Contraseña invalida');
