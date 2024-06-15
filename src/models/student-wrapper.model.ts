@@ -48,7 +48,7 @@ const AuthenticableWrapperSchema = new mongoose.Schema({
 export const AuthenticableWrapper = mongoose.model<IAuthenticableWrapper>('AuthenticableWrapper', AuthenticableWrapperSchema);
 
 // Encrypt password method
-const encryptPassword = async (password: string): Promise<string> => {
+export const encryptPassword = async (password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 };
