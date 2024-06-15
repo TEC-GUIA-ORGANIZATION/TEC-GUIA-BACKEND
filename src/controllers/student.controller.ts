@@ -27,7 +27,7 @@ export class StudentController{
      * @param res - Express Response object 
      * @returns Response object with the students or error message
      */
-    public static getCurrentFirstSemesterStudents = async (req: Request, res: Response) => {
+    public static getCurrentSemesterStudents = async (req: Request, res: Response) => {
         const semester: string = StudentController.getSemesterFromDate(new Date());
         const currentYear: number = new Date().getFullYear();
 
@@ -71,113 +71,13 @@ export class StudentController{
     }
 
     /**
-     * Get all students by campus 
-     * @param req - Express Request object 
-     * @param res - Express Response object 
-     * @returns Response object with the students or error message 
-     */
-    public static getAllStudentsByCampus = async (req: Request, res: Response) => {
-
-        const { semester, entryYear, campus } = req.query;
-        if (!semester || !entryYear || !campus) {
-            return res.status(400).send('Semestre y año requeridos');
-        }
-
-        const students = await Student.find({
-            semester: semester,
-            entryYear: entryYear,
-            campus: campus
-        });
-
-
-        return (!students)
-            ? res.status(400).json({ error: 'No existen estudiantes matriculados en la sede seleccionada para este periodo' })
-            : res.status(200).json(students);
-
-    };
-
-    /**
-     * Get all students by campus 
+     * Upload a list of students
      * @param req - Express Request object 
      * @param res - Express Response object 
      * @returns Response object with the students or error message 
      */
 
 
-    /**
-     * Get all students by campus 
-     * @param req - Express Request object 
-     * @param res - Express Response object 
-     * @returns Response object with the students or error message 
-     */
-    public static getAllStudentsOrderByCampus = async (req: Request, res: Response) => {
-        const { semester, entryYear, order = 'asc' } = req.query; // Added 'order' with default value 'asc'
-
-        if (!semester || !entryYear) {
-            return res.status(400).send('Semestre y año requeridos');
-        }
-
-        const sortOrder = order === 'asc' ? 1 : -1; // Determine sort order
-
-        const students = await Student.find({
-            semester: semester,
-            entryYear: entryYear // Assuming 'year' corresponds to 'entryYear' in your schema
-        }).sort({ campus: sortOrder }); // Sorting by campus
-
-        return (!students || students.length === 0)
-            ? res.status(404).json({ error: 'No existen usuarios cargados en el periodo actual' })
-            : res.status(200).json(students);
-    }
-
-    /**
-     * Get all students by institutionId
-     * @param req - Express Request object 
-     * @param res - Express Response object 
-     * @returns Response object with the students or error message 
-     */
-    public static getAllStudentsOrderByInstitutionId = async (req: Request, res: Response) => {
-        const { semester, entryYear, order = 'asc' } = req.query; // Added 'order' with default value 'asc'
-
-        if (!semester || !entryYear) {
-            return res.status(400).send('Semestre y año requeridos');
-        }
-
-        const sortOrder = order === 'asc' ? 1 : -1; // Determine sort order
-
-        const students = await Student.find({
-            semester: semester,
-            entryYear: entryYear // Assuming 'year' corresponds to 'entryYear' in your schema
-        }).sort({ institutionId: sortOrder }); // Sorting by institutionId
-
-        return (!students || students.length === 0)
-            ? res.status(404).json({ error: 'No existen usuarios cargados en el periodo actual' })
-            : res.status(200).json(students);
-    }
-
-    /**
-     * Get all students by name
-     * @param req - Express Request object 
-     * @param res - Express Response object 
-     * @returns Response object with the students or error message 
-     */
-    public static getAllStudentsOrderByName = async (req: Request, res: Response) => {
-        const { semester, entryYear, order = 'asc' } = req.query; // 'order' determines if sorting is ascending or descending
-
-            if (!semester || !entryYear) {
-                return res.status(400).send('Semestre y año requeridos');
-            }
-
-            const sortOrder = order === 'asc' ? 1 : -1; // Determine sort order for alphabetical sorting
-
-                const students = await Student.find({
-                    semester: semester,
-                    entryYear: entryYear
-                }).sort({ name: sortOrder }); // Sorting by name alphabetically
-
-                return (!students || students.length === 0)
-                    ? res.status(404).json({ error: 'No existen usuarios cargados en el periodo actual' })
-                    : res.status(200).json(students);
-    }
 
     /**
      * Create a new student
@@ -287,7 +187,7 @@ export class StudentController{
                 return res.status(404).json({ message: 'No students found for the selected campus.' });
             }
 
-            const studentData: any = students.map((student: any) => ({
+            const studentData: any[] = students.map((student: IStudent) => ({
                 email: student.email,
                 name: student.name,
                 firstLastname: student.firstLastname,

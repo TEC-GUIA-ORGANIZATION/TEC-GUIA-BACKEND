@@ -16,7 +16,7 @@ export const MONGO_DB = {
 // Cross Domain Configuration
 export const CROSS_DOMAIN = {
     allowedOrigins: [
-        '*', // Allow all origins
+        'http://localhost:4200',
     ],
 };
 
