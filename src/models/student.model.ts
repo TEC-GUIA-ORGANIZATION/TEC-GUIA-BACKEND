@@ -1,7 +1,6 @@
 // student.model.ts
 
 import mongoose, { Document } from 'mongoose';
-
 import { Semester } from '../enums/semester.enum';
 
 // Interface for the student model
@@ -19,7 +18,7 @@ export interface IStudent extends Document {
 }
 
 // Schema for the student model
-const StudentSchema =  new mongoose.Schema<IStudent>({
+const studentSchema =  new mongoose.Schema({
     institutionID: {
         type: Number,
         required: true
@@ -65,5 +64,4 @@ const StudentSchema =  new mongoose.Schema<IStudent>({
     }
 });
 
-// Export the student model
-export const Student = mongoose.model<IStudent>('Student', StudentSchema);
+export const Student = mongoose.model<IStudent>('Students', studentSchema);

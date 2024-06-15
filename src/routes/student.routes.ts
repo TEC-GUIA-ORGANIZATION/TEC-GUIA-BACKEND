@@ -10,10 +10,9 @@ const upload = multer({dest: 'uploads/'});
 
 router.patch('/updateStudent/:id', StudentController.updateStudent);
 router.get('/getAllStudentsInPeriod', StudentController.getAllStudents);
-router.get('/getAllStudentsInPeriodByCampus', StudentController.getAllStudentsByCampus);
 router.post('/upload', upload.single('file'), StudentController.saveStudentsFromExcel);
 router.get('/download/:campus', StudentController.downloadStudentExcel);
-router.get('/currentFirstSemesterStudents', StudentController.getCurrentFirstSemesterStudents);
+router.get('/current-semester', StudentController.getCurrentSemesterStudents);
 router.get('/downloadAll', StudentController.downloadAllStudentsExcel);
 
 export default router;
