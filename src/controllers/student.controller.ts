@@ -78,6 +78,7 @@ export class StudentController{
      */
     public static createStudent = async (student: IStudent): Promise<IAuthenticableWrapper | undefined> => {
         try {
+            
             const studentExist = await Student.findOne({
                 $or: [
                     { institutionID: student.institutionID },
@@ -86,13 +87,25 @@ export class StudentController{
             });
 
             if (!studentExist) {
-                const newStudent = new Student(student);
+                const newStudent = await Student.create({
+                    institutionID: student.institutionID, 
+                    personalPhone: student.personalPhone, 
+                    semester: student.semester, 
+                    entryYear: student.entryYear, 
+                    email: student.email, 
+                    name: student.name, 
+                    firstLastname: student.firstLastname, 
+                    secondLastname: student.secondLastname, 
+                    campus: student.campus, 
+                    photo: student.photo});
+                await newStudent.save();
+                const pass = await encryptPassword(student.institutionID.toString());
                 const newStudentWrapper = new AuthenticableWrapper({
                     student: newStudent,
-                    password: encryptPassword(student.institutionID.toString()),
+                    password: pass,
                     rol: "estudiante"
                 });
-                await newStudent.save();
+                
                 await newStudentWrapper.save();
                 return newStudentWrapper;
             }
@@ -145,11 +158,11 @@ export class StudentController{
             const studentsToDelete=await Student.find({ campus: campus });
             if (studentsToDelete.length > 0) {
                 for (let student of studentsToDelete) {
+                    await Student.deleteOne({ _id: student._id });
                     await AuthenticableWrapper.deleteOne({ student: student._id });
                 }
             }
             
-            await Student.deleteMany({ campus: campus });
             
             for (let student of studentsCreated) {
                 await this.createStudent(student);
