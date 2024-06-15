@@ -42,6 +42,28 @@ export class StudentController{
     }
 
     /**
+     * Get a student by ID
+     * @param req - Express Request object
+     * @param res - Express Response object
+     * @returns Response object with the student or error message
+     */
+    public static getWrappedStudentById = async (req: Request, res: Response) => {
+        const id = req.params.id;
+        if (!mongoose.Types.ObjectId.isValid(id))
+            return res.status(404).json({ error: 'Estudiante no encontrado.' });
+
+        const studentUser = await AuthenticableWrapper.findById(id);
+        if (!studentUser) {
+            return res.status(404).json({ error: 'Usuario no encontrado.' });
+        }
+
+        const student = await Student.findById(studentUser.student);
+        return (!student)
+            ? res.status(400).json({ error: 'No existe el estudiante' })
+            : res.status(200).json(student);
+    }
+
+    /**
      * Update a student
      * @param req - Express Request object
      * @param res - Express Response object
