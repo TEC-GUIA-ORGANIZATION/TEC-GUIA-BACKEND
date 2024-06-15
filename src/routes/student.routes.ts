@@ -7,7 +7,7 @@ import multer from 'multer';
 const router = Router();
 const upload = multer({dest: 'uploads/'});
 
-router.post('/uploadStudentLists', StudentController.uploadStudentList);
+
 router.patch('/updateStudent/:id', StudentController.updateStudent);
 router.get('/getAllStudentsInPeriod', StudentController.getAllStudents);
 router.get('/getAllStudentsInPeriodByCampus', StudentController.getAllStudentsByCampus);

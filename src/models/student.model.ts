@@ -1,7 +1,7 @@
 // student.model.ts
 
 import mongoose, { Document } from 'mongoose';
-import { User } from './user.model';
+
 import { Semester } from '../enums/semester.enum';
 
 // Interface for the student model
@@ -65,4 +65,5 @@ const StudentSchema =  new mongoose.Schema<IStudent>({
     }
 });
 
-export const Student = User.discriminator('Students', StudentSchema);
+// Export the student model
+export const Student = mongoose.model<IStudent>('Student', StudentSchema);

@@ -29,7 +29,7 @@ export class AuthController{
         }
         else{
             try {
-                const auth: IAuthenticable= new AuthenticableWrapper(req.body);
+                const auth: IAuthenticable= new User(req.body);
                 return auth.signUp(req, res);
             } catch (error) {
                 res.status(400).json({ error: error });
