@@ -3,7 +3,7 @@
 import mongoose from 'mongoose';
 import { IComment } from './comment.model';
 import { Publisher, Subscriber } from './observer.model';
-import { Element, MessageVisitor } from './visitor.model';
+import { Visitable, MessageVisitor } from './visitor.model';
 
 // Activity types 
 // This enum contains the different types of activities that can be created
@@ -33,7 +33,7 @@ export enum ActivityModality {
 
 // Activity interface
 // This interface defines the structure of an activity
-export interface IActivity extends Document, Publisher, Element {
+export interface IActivity extends Document, Publisher, Visitable {
     week: number,
     date: Date,
     type: ActivityType,
@@ -133,23 +133,25 @@ const activitySchema = new mongoose.Schema<IActivity>({
     }]
 });
 
-activitySchema.methods.acceptVisitorRecordatorio = function(reminderVisitor: MessageVisitor): void {
+activitySchema.methods.acceptVisitorReminder = function(reminderVisitor: MessageVisitor): void {
     reminderVisitor.visit(this as IActivity);
+    this.notifySubscribers();
 }
 
-activitySchema.methods.acceptVisitorPublicacion = function(publicationVisitor: MessageVisitor): void {
+activitySchema.methods.acceptVisitorPublication = function(publicationVisitor: MessageVisitor): void {
     publicationVisitor.visit(this as IActivity);
+    this.notifySubscribers();
 }
 
-activitySchema.methods.suscribir = function(subscriber: Subscriber): void {
+activitySchema.methods.subscribe = function(subscriber: Subscriber): void {
     this.suscriptores.push(subscriber);
 }
 
-activitySchema.methods.desuscribir = function(subscriber: Subscriber): void {
+activitySchema.methods.unsubscribe = function(subscriber: Subscriber): void {
     this.suscriptores = this.suscriptores.filter((s: Subscriber) => s !== subscriber);
 }
 
-activitySchema.methods.notificarSuscriptores = function(): void {
+activitySchema.methods.notifySubscribers = function(): void {
     this.suscriptores.forEach((s: Subscriber) => {
         if (typeof s.update === 'function') {
             s.update(this);
