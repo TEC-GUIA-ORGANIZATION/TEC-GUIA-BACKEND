@@ -1,9 +1,8 @@
 // activity.controller.ts
-
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
-import { Activity, ActivityStatus } from '../models/activity.model';
-import { Planning } from "../models/planning.model";
+import { Activity, ActivityStatus } from '../models/mongo/activity.model';
+import { Planning } from "../models/mongo/planning.model";
 import { HandleError } from "../utils/error";
 
 // Activities controller singleton

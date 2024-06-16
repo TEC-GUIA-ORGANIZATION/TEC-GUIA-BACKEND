@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express';
 import { GuideProfessor } from '../models/guide-professor.model';
-import { User } from '../models/user.model';
+import { User } from '../models/mongo/user.model';
 import { Role } from '../enums/role.enum';
 
 // Professor controller class

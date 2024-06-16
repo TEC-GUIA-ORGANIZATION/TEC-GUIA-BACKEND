@@ -2,8 +2,8 @@
 
 import mongoose from 'mongoose';
 import { IComment } from './comment.model';
-import { Publisher, Subscriber } from './observer.model';
-import { Element, MessageVisitor } from './visitor.model';
+import { Publisher, Subscriber } from '../automation/observer.model';
+import { Element, MessageVisitor } from '../automation/visitor.model';
 
 // Activity types 
 // This enum contains the different types of activities that can be created
@@ -33,7 +33,7 @@ export enum ActivityModality {
 
 // Activity interface
 // This interface defines the structure of an activity
-export interface IActivity extends Document, Publisher, Element {
+export interface IActivity extends Publisher, Element {
     week: number,
     date: Date,
     type: ActivityType,
@@ -61,9 +61,13 @@ export interface IActivity extends Document, Publisher, Element {
     notifySubscribers(): void;
 }
 
+
+export interface IActivityMongo extends Document, IActivity {
+}
+
 // Activity schema 
 // This schema defines the structure of an activity
-const activitySchema = new mongoose.Schema<IActivity>({
+const activitySchema = new mongoose.Schema<IActivityMongo>({
     week: {
       type: Number,
       required: true,

@@ -2,8 +2,8 @@
 
 import mongoose from 'mongoose';
 import { IActivity } from './activity.model';
-import { Semester } from '../enums/semester.enum';
-import { Campus } from '../enums/campus.enum';
+import { Semester } from '../../enums/semester.enum';
+import { Campus } from '../../enums/campus.enum';
 
 // Planning interface
 // This interface defines the structure of a planning
