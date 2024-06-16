@@ -10,6 +10,7 @@ import { MessageVisitor, Visitable } from './visitor.model';
 // Activity implementation
 // This class implements the activity, publisher and visitable interfaces
 export class Activity implements IActivity, Publisher, Visitable {
+    id: string;
     week: number;
     date: Date;
     type: ActivityType;
@@ -31,6 +32,7 @@ export class Activity implements IActivity, Publisher, Visitable {
     comments?: IComment[];
 
     constructor(
+        id: string,
         week: number,
         date: Date,
         type: ActivityType,
@@ -51,6 +53,7 @@ export class Activity implements IActivity, Publisher, Visitable {
         },
         comments?: IComment[],
     ) {
+        this.id = id;
         this.week = week;
         this.date = date;
         this.type = type;
@@ -68,9 +71,65 @@ export class Activity implements IActivity, Publisher, Visitable {
         this.comments = comments;
     }
 
-    acceptVisitorReminder(reminderVisitor: MessageVisitor): void {}
-    acceptVisitorPublication(publicationVisitor: MessageVisitor): void {}
-    subscribe(subscriber: Subscriber): void {}
-    unsubscribe(subscriber: Subscriber): void {}
-    notifySubscribers(): void {}
+    /**
+     * Accept visitor reminder 
+     * This method will accept a reminder visitor 
+     * @param reminderVisitor The reminder visitor 
+     * @returns void 
+     **/
+    acceptVisitorReminder(reminderVisitor: MessageVisitor): void {
+        reminderVisitor.visit(this);
+    }
+
+    /**
+     * Accept visitor publication 
+     * This method will accept a publication visitor 
+     * @param publicationVisitor The publication visitor 
+     * @returns void 
+     **/
+    acceptVisitorPublication(publicationVisitor: MessageVisitor): void {
+        publicationVisitor.visit(this);
+    }
+
+    /**
+     * Subscribe 
+     * This method will subscribe a subscriber to the activity 
+     * @param subscriber The subscriber 
+     * @returns void 
+     **/
+    subscribe(subscriber: Subscriber): void {
+        this.suscriptores.push(subscriber);
+    }
+
+    /**
+     * Unsubscribe 
+     * This method will unsubscribe a subscriber from the activity 
+     * @param subscriber The subscriber 
+     * @returns void 
+     **/
+    unsubscribe(subscriber: Subscriber): void {
+        this.suscriptores = this.suscriptores.filter(s => s !== subscriber);
+    }
+
+    /**
+     * Notify reminder subscribers 
+     * This method will notify all subscribers that the activity needs to be reminded
+     * @returns void 
+     **/
+    notifyReminderSubscribers(): void {
+        this.suscriptores.forEach(subscriber => {
+            subscriber.updateReminder(this);
+        });
+    }
+
+    /**
+     * Notify publication subscribers 
+     * This method will notify all subscribers that the activity has been published
+     * @returns void 
+     **/
+    notifyPublicationSubscribers(): void {
+        this.suscriptores.forEach(subscriber => {
+            subscriber.updatePublication(this);
+        });
+    }
 }

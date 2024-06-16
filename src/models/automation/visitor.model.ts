@@ -1,9 +1,9 @@
 // visitor.model.ts
 
-import { IActivity } from "../activity.model";
+import { Activity } from "./activity.model";
 
 export interface MessageVisitor {
-    visit(activities: IActivity): void;
+    visit(activities: Activity): void;
 }
 
 export interface Visitable {

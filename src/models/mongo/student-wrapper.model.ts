@@ -18,7 +18,7 @@ export interface IAuthenticable extends Document {
 
 // Authenticable Wrapper interface 
 // This interface defines the structure of an authenticable wrapper
-export interface IAuthenticableWrapper extends Document, IAuthenticable {
+export interface IAuthenticableWrapper extends IAuthenticable {
     student: IStudent;
     password: string;
     rol: string;

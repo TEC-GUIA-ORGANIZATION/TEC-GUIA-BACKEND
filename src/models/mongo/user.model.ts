@@ -129,6 +129,4 @@ usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
 
     res.set('Access-Control-Expose-Headers', 'auth-token');
     res.header('auth-token', [token]).json(user);
-    
-    console.log(req.body);
 }

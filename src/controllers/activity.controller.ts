@@ -5,6 +5,7 @@ import { ActivityStatus } from '../models/activity.model';
 import { Activity } from "../models/mongo/activity.model";
 import { Planning } from "../models/mongo/planning.model";
 import { HandleError } from "../utils/error";
+import { Program } from "../services/program.service";
 
 // Activities controller singleton
 // This class contains methods to handle the activities
@@ -107,6 +108,10 @@ export class ActivitiesController {
         try {
             const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, { new: true });
             if (!updatedActivity) return res.status(404).json({ error: 'Actividad no encontrada o no se pudo realizar la actualización' });
+            
+            if (updatedActivity.status === ActivityStatus.CANCELADA) {
+                Program.getInstance().getNotificationsCenter().updateCancelation(updatedActivity);
+            }
 
             res.json(updatedActivity);
         } catch (error) {
