@@ -2,8 +2,8 @@
 
 import mongoose, { Document } from 'mongoose';
 import { Request, Response } from 'express';
-import { Role } from '../enums/role.enum';
-import { IStudent, Student } from '../models/student.model';
+import { Role } from '../../enums/role.enum';
+import { IStudent, Student } from './student.model';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AUTH } from '../../app.config';
