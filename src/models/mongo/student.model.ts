@@ -1,7 +1,7 @@
 // student.model.ts
 
 import mongoose, { Document } from 'mongoose';
-import { Semester } from '../enums/semester.enum';
+import { Semester } from '../../enums/semester.enum';
 
 // Interface for the student model
 export interface IStudent extends Document {
