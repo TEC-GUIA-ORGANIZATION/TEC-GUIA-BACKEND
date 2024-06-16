@@ -1,8 +1,8 @@
 // comment.controller.ts
 
 import { Request, Response } from 'express';
-import { IComment, Comment } from '../models/comment.model';
-import { Activity } from '../models/activity.model';
+import { IComment, Comment } from '../models/mongo/comment.model';
+import { Activity } from '../models/mongo/activity.model';
 import mongoose from 'mongoose';
 
 // Comments controller class

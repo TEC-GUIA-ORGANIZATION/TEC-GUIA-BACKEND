@@ -1,5 +1,5 @@
-import { MessageVisitor } from "../models/visitor.model";
-import { IActivity } from "../models/activity.model";
+import { MessageVisitor } from "../models/mongo/visitor.model";
+import { IActivity } from "../models/mongo/activity.model";
 
 export class AcceptVisitorReminder implements MessageVisitor {
     visit(activities: IActivity): void {
