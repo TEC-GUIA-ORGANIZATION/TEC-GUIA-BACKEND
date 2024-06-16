@@ -3,11 +3,11 @@
 import mongoose, { Document } from 'mongoose';
 import { Request, Response } from 'express';
 import { IAuthenticable } from './student-wrapper.model';
-import { Campus } from '../enums/campus.enum';
-import { Role } from '../enums/role.enum';
+import { Campus } from '../../enums/campus.enum';
+import { Role } from '../../enums/role.enum';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AUTH } from '../app.config';
+import { AUTH } from '../../app.config';
 
 // User interface
 // This interface defines the structure of a user

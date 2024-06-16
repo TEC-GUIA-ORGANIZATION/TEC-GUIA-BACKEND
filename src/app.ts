@@ -24,6 +24,12 @@ app.use(express.static(APP_CONFIG.APP.public_path));
 // Set routes
 app.use(routes);
 
+
+
 app.listen(APP_CONFIG.APP.port, () => {
     console.log(`Server running on port ${APP_CONFIG.APP.port}`);
 })
+
+
+
+
