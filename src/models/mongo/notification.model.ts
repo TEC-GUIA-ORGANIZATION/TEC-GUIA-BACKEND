@@ -1,9 +1,9 @@
 import mongoose, {Document} from 'mongoose';
 import { IAuthenticable } from './student-wrapper.model';
-import { IMensaje } from './mensaje.model';
+import { IMessage } from './message.model';
 
 export interface INotificacion extends Document, IAuthenticable{
-    mensaje: IMensaje;
+    mensaje: IMessage;
     leido: Boolean;
 }
 

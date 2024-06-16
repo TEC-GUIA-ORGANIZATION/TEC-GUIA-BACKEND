@@ -1,7 +1,7 @@
 // professor.controller.ts
 
 import { Request, Response } from 'express';
-import { GuideProfessor } from '../models/guide-professor.model';
+import { GuideProfessor } from '../models/mongo/guide-professor.model';
 import { User } from '../models/mongo/user.model';
 import { Role } from '../enums/role.enum';
 

@@ -2,8 +2,6 @@
 
 import mongoose from 'mongoose';
 import { IComment } from './mongo/comment.model';
-import { Publisher, Subscriber } from './automation/observer.model';
-import { Visitable, MessageVisitor } from './mongo/visitor.model';
 
 // Activity types 
 // This enum contains the different types of activities that can be created

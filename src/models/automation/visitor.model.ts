@@ -8,13 +8,3 @@ export interface Visitable {
     acceptVisitorReminder(reminderVisitor: MessageVisitor): void;
     acceptVisitorPublication(publicationVisitor: MessageVisitor): void;
 }
-
-
-
-
-
-
-
-
-
-

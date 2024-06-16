@@ -1,7 +1,8 @@
 // activity.controller.ts
 import { Request, Response } from "express";
 import mongoose from 'mongoose';
-import { Activity, ActivityStatus } from '../models/mongo/activity.model';
+import { ActivityStatus } from '../models/activity.model';
+import { Activity } from "../models/mongo/activity.model";
 import { Planning } from "../models/mongo/planning.model";
 import { HandleError } from "../utils/error";
 

@@ -1,11 +1,11 @@
 // student.controller.ts
 
-import { IStudent, Student } from '../models/student.model';
+import { IStudent, Student } from '../models/mongo/student.model';
 import { Campus } from '../enums/campus.enum';
 import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
-import { AuthenticableWrapper,IAuthenticableWrapper, encryptPassword } from '../models/student-wrapper.model';
+import { AuthenticableWrapper, IAuthenticableWrapper, encryptPassword } from '../models/mongo/student-wrapper.model';
 
 // Student controller class
 // This class contains methods to handle the students
