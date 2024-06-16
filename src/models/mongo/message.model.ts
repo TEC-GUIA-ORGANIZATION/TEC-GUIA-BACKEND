@@ -19,10 +19,9 @@ const messageSchema = new mongoose.Schema<IMessage>({
         required: true,
     },
     emisor: {
-        type: mongoose.Schema.Types.ObjectId,
-        reference: 'Activity',
+        type: String,
         required: true,
     },
 })
 
-export const Message = mongoose.model<IMessage>('Mensajes', messageSchema);
+export const Message = mongoose.model<IMessage>('Message', messageSchema);

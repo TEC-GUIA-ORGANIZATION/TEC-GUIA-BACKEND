@@ -53,9 +53,9 @@ export class VisitorPublication implements MessageVisitor {
             activity.status = ActivityStatus.NOTIFICADA;
             Program.getInstance().patchActivity(activity);
 
-            if (diffDays > 0) {
+            // if (diffDays > 0) {
                 activity.notifyPublicationSubscribers();
-            }
+            // }
         }
     }
 }

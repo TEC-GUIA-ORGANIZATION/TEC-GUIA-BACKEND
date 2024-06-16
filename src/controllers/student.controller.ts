@@ -6,6 +6,8 @@ import { Request, Response } from 'express';
 import xlsx from 'xlsx';
 import mongoose from 'mongoose';
 import { AuthenticableWrapper, IAuthenticableWrapper, encryptPassword } from '../models/mongo/student-wrapper.model';
+import { Mailbox } from '../models/mongo/mailbox.model';
+import { Program } from '../services/program.service';
 
 // Student controller class
 // This class contains methods to handle the students
@@ -122,11 +124,13 @@ export class StudentController{
                     photo: student.photo});
                 await newStudent.save();
                 const pass = await encryptPassword(student.institutionID.toString());
+                const mailbox = await Mailbox.create({});
                 const newStudentWrapper = new AuthenticableWrapper({
                     student: newStudent,
                     password: pass,
                     rol: "estudiante",
-                    status: true
+                    status: true,
+                    mailbox: mailbox
                 });
                 
                 await newStudentWrapper.save();
@@ -175,6 +179,7 @@ export class StudentController{
                 const newStudent = await this.createStudent(student);
                 if (newStudent) {
                     studentsCreated.push(newStudent.student);
+                    Program.getInstance().addStudent(newStudent);
                 }
             }
 

@@ -7,10 +7,12 @@ import { VisitorPublication, VisitorReminder } from "./visitor.service";
 import { IActivity } from '../models/activity.model';
 import { Document, Types } from "mongoose";
 import { Activity as ActivityModel } from "../models/mongo/activity.model";
+import { AuthenticableWrapper, IAuthenticableWrapper } from "../models/mongo/student-wrapper.model";
 
 export class Program {
     date: Date;
     activities: Activity[] = [];
+    students: IAuthenticableWrapper[] = [];
     visitors: MessageVisitor[];
     notificationsCenter: NotificationsCenter;
 
@@ -35,6 +37,15 @@ export class Program {
      **/
     private constructor() {
         this.date = new Date();
+
+        // Load the students from the database
+        AuthenticableWrapper.find().exec().then((students: IAuthenticableWrapper[]) => {
+            this.students = students.filter(student => student.status === true);
+            console.log(`${students.length} students loaded successfully`);
+        }).catch((error) => {
+            console.error('Error al obtener los estudiantes', error);
+            return [];
+        });
 
         // Get the activities from the database
         ActivityModel.find().exec().then((activities: (Document<unknown, {}, IActivity> & IActivity & { _id: Types.ObjectId; })[]) => {
@@ -80,6 +91,15 @@ export class Program {
      **/
     getNotificationsCenter(): NotificationsCenter {
         return this.notificationsCenter;
+    }
+
+    /**
+     * Get students
+     * This method returns the students
+     * @returns The students
+     **/
+    getStudents(): IAuthenticableWrapper[] {
+        return this.students;
     }
 
     /**
@@ -140,6 +160,47 @@ export class Program {
     patchActivity(activity: Activity): void {
         ActivityModel.findByIdAndUpdate(activity.id, activity).exec().then(() => { }).catch((error) => {
             console.error('Error al actualizar la actividad', error);
+        });
+    }
+
+    /**
+     * Add an activity 
+     * This method will add an activity to the program 
+     * @param activity The activity to add
+     * @returns void
+     **/
+    addActivity(activity: Activity): void {
+        this.activities.push(activity);
+        this.activities[this.activities.length - 1].subscribe(this.notificationsCenter);
+        this.visitors.forEach(visitor => {
+            // Visit the activity with the visitor
+            activity.acceptVisitorReminder(visitor);
+            activity.acceptVisitorPublication(visitor);
+        });
+    }
+
+    /**
+     * Add a student 
+     * This method will add a student to the program 
+     * @param student The student to add 
+     * @returns void 
+     **/
+    addStudent(student: IAuthenticableWrapper): void {
+        this.students.push(student);
+    }
+
+    /**
+     * Update a student 
+     * This method will update a student 
+     * @param student The student to update 
+     * @returns void
+     **/
+    updateStudent(student: IAuthenticableWrapper): void {
+        this.students = this.students.map(st => {
+            if (st._id === student._id) {
+                return student;
+            }
+            return st;
         });
     }
 }

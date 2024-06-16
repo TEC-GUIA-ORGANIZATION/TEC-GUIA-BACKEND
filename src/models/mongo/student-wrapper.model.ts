@@ -8,6 +8,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { AUTH } from '../../app.config';
 import { IMailbox } from './mailbox.model';
+import { Program } from '../../services/program.service';
 
 // Authenticable interface
 // This interface is used to handle the authentication
@@ -92,6 +93,8 @@ AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Re
 
         const token: string = jwt.sign({ _id: savedUser._id }, AUTH.jwtSecret || 'tokentest', {
             expiresIn: 60 * 60 * 24});
+
+        Program.getInstance().addStudent(savedUser);
 
         res.header('auth-token', token).json(savedUser); 
     } catch (error) {
