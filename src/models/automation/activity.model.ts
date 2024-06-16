@@ -1,3 +1,5 @@
+// activity.model.ts
+
 import mongoose from 'mongoose';
 import { IActivity } from "../activity.model";
 import { Publisher, Subscriber } from "./observer.model";
@@ -5,7 +7,8 @@ import { IComment } from "../mongo/comment.model";
 import { ActivityModality, ActivityType } from '../activity.model';
 import { MessageVisitor, Visitable } from './visitor.model';
 
-
+// Activity implementation
+// This class implements the activity, publisher and visitable interfaces
 export class Activity implements IActivity, Publisher, Visitable {
     week: number;
     date: Date;

@@ -1,3 +1,5 @@
+// visitor.model.ts
+
 import { IActivity } from "../activity.model";
 
 export interface MessageVisitor {
