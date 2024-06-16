@@ -1,7 +1,7 @@
 // planning.model.ts
 
 import mongoose from 'mongoose';
-import { IActivity } from './activity.model';
+import { IActivity } from '../activity.model';
 import { Semester } from '../../enums/semester.enum';
 import { Campus } from '../../enums/campus.enum';
 

@@ -1,14 +1,14 @@
 import mongoose, {Document} from 'mongoose';
-import { IActivity } from './activity.model';
+import { IActivity } from '../activity.model';
 
 
-export interface IMensaje extends Document {
+export interface IMessage extends Document {
     contenido: String;
     fecha: Date;
     emisor: IActivity;
 }
 
-const mensajeSchema = new mongoose.Schema<IMensaje>({
+const messageSchema = new mongoose.Schema<IMessage>({
     contenido: {
         type: String,
         required: true,
@@ -24,5 +24,4 @@ const mensajeSchema = new mongoose.Schema<IMensaje>({
     },
 })
 
-
-export const MensajeModel = mongoose.model<IMensaje>('Mensajes', mensajeSchema);
+export const Message = mongoose.model<IMessage>('Mensajes', messageSchema);

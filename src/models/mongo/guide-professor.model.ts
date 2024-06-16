@@ -1,7 +1,7 @@
 // guide-professor.model.ts
 
 import mongoose, {Document} from 'mongoose';
-import { IUser, User } from './mongo/user.model';
+import { IUser, User } from './user.model';
 
 // Guide Professor interface
 export interface IGuideProfessor extends Document, IUser {

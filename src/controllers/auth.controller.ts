@@ -1,8 +1,8 @@
 // auth.controller.ts
 
-import { User } from '../models/user.model';
-import { Student } from '../models/student.model';
-import { IAuthenticable, AuthenticableWrapper } from '../models/student-wrapper.model';
+import { User } from '../models/mongo/user.model';
+import { Student } from '../models/mongo/student.model';
+import { IAuthenticable, AuthenticableWrapper } from '../models/mongo/student-wrapper.model';
 import { Request, Response } from 'express';
 import jwt  from 'jsonwebtoken';
 
