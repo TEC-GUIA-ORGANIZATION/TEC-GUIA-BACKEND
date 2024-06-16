@@ -45,6 +45,6 @@ router.use(root + "comments", commentRoutes);
 router.use(root + "evidence", evidenceRoutes);
 
 // Notifications routes
-router.use(root, notificationRoutes);
+router.use(root + "notifications", notificationRoutes);
 
 export default router;

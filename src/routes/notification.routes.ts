@@ -5,8 +5,8 @@ import { NotificationController } from '../controllers/notification.controller';
 
 const router = Router();
 
-router.get('/notifications/:userId', NotificationController.getUserNotifications);
-router.put('/notification/:notificationId', NotificationController.toggleReadNotification);
-router.delete('/notification/:notificationId', NotificationController.deleteNotification);
+router.get('/:userId', NotificationController.getUserNotifications);
+router.put('/:notificationId', NotificationController.toggleReadNotification);
+router.delete('/:notificationId', NotificationController.deleteNotification);
 
 export default router;
