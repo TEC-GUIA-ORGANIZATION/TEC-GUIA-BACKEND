@@ -21,6 +21,7 @@ export interface IAuthenticableWrapper extends Document, IAuthenticable {
     student: IStudent;
     password: string;
     rol: string;
+    status: boolean;
     encryptPassword(password: string): Promise<string>;
     validatePassword(password: string): Promise<boolean>;
     signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
@@ -41,6 +42,11 @@ const AuthenticableWrapperSchema = new mongoose.Schema({
     rol: {
         type: String,
         enum: Role,
+        required: true
+    },
+    status: {
+        type: Boolean,
+        default: true,
         required: true
     }
 });

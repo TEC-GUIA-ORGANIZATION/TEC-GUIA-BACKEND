@@ -125,7 +125,8 @@ export class StudentController{
                 const newStudentWrapper = new AuthenticableWrapper({
                     student: newStudent,
                     password: pass,
-                    rol: "estudiante"
+                    rol: "estudiante",
+                    status: true
                 });
                 
                 await newStudentWrapper.save();
