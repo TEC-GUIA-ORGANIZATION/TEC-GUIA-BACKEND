@@ -6,6 +6,7 @@ import { Activity } from "../models/mongo/activity.model";
 import { Planning } from "../models/mongo/planning.model";
 import { HandleError } from "../utils/error";
 import { Program } from "../services/program.service";
+import { Activity as ActivityObject } from "../models/automation/activity.model";
 
 // Activities controller singleton
 // This class contains methods to handle the activities
@@ -73,6 +74,27 @@ export class ActivitiesController {
 
             await ActivitiesController.addActivityToPlanning(req.body.campus, newActivity._id);
 
+            Program.getInstance().addActivity(
+                new ActivityObject(
+                    newActivity._id.toString(),
+                    newActivity.week,
+                    newActivity.date,
+                    newActivity.type,
+                    newActivity.name,
+                    newActivity.description,
+                    newActivity.responsible,
+                    newActivity.daysToAnnounce,
+                    newActivity.daysToRemember,
+                    newActivity.modality,
+                    newActivity.placeLink,
+                    newActivity.poster,
+                    newActivity.status,
+                    [], // Subscribers
+                    newActivity.evidence,
+                    newActivity.comments
+                )
+            );
+
             res.status(201).json(newActivity);
         } catch (error) {
             HandleError(res, error, 'Error al crear la actividad');
@@ -108,6 +130,27 @@ export class ActivitiesController {
         try {
             const updatedActivity = await Activity.findByIdAndUpdate(id, req.body, { new: true });
             if (!updatedActivity) return res.status(404).json({ error: 'Actividad no encontrada o no se pudo realizar la actualización' });
+
+            Program.getInstance().patchActivity(
+                new ActivityObject(
+                    updatedActivity._id.toString(),
+                    updatedActivity.week,
+                    updatedActivity.date,
+                    updatedActivity.type,
+                    updatedActivity.name,
+                    updatedActivity.description,
+                    updatedActivity.responsible,
+                    updatedActivity.daysToAnnounce,
+                    updatedActivity.daysToRemember,
+                    updatedActivity.modality,
+                    updatedActivity.placeLink,
+                    updatedActivity.poster,
+                    updatedActivity.status,
+                    [], // Subscribers
+                    updatedActivity.evidence,
+                    updatedActivity.comments
+                )
+            );
             
             if (updatedActivity.status === ActivityStatus.CANCELADA) {
                 Program.getInstance().getNotificationsCenter().updateCancelation(updatedActivity);

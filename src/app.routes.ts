@@ -9,6 +9,7 @@ import planningRoutes from "./routes/planning.routes";
 import activityRoutes from "./routes/activity.routes";
 import commentRoutes from "./routes/comment.routes";
 import evidenceRoutes from "./routes/evidence.routes";
+import notificationRoutes from "./routes/notification.routes";
 
 // Create a new router
 const router = Router();
@@ -42,5 +43,8 @@ router.use(root + "comments", commentRoutes);
 
 // Evidence routes 
 router.use(root + "evidence", evidenceRoutes);
+
+// Notifications routes
+router.use(root, notificationRoutes);
 
 export default router;

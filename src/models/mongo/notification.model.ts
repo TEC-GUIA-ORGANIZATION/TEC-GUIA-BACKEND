@@ -9,7 +9,8 @@ export interface INotificacion extends Document, IAuthenticable{
 
 const NotificationSchema = new mongoose.Schema({
     mensaje: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        reference: 'Message',
         required: true
     },
     leido: {
