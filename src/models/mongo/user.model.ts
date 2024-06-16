@@ -130,3 +130,17 @@ usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
     res.set('Access-Control-Expose-Headers', 'auth-token');
     res.header('auth-token', [token]).json(user);
 }
+usuarioSchema.methods.updatePassword = async function(req: Request, res: Response) {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).json('El email no es válido.');
+    
+    const correctPassword: boolean = await validatePassword(req.body.password, user.password);
+    if (!correctPassword) return res.status(400).json('Contraseña invalida');
+
+    const newPassword = await encryptPassword(req.body.newPassword);
+    user.password = newPassword;
+    await user.save();
+
+    res.json('Contraseña actualizada');
+}
+

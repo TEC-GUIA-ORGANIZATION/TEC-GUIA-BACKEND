@@ -88,4 +88,36 @@ export class AuthController{
             res.status(400).send('Invalid Token');
         }
     }
+    /*
+recibe esto {
+    "email": "sancarlosestudiante1@example.com",
+    "password": "6789123456",
+    "newPassword": "securePassword"
+}
+    */
+    public static async updatePassword(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
+        const { email, password, newPassword } = req.body;
+        console.log(email, password, newPassword);
+        const emailExistsStudent = await Student.findOne({ email: email });
+        const emailExistUser = await User.findOne({ email: email });
+
+        if (emailExistUser) {
+            return emailExistUser.schema.methods.updatePassword(req, res);
+        }
+
+        if (emailExistsStudent) {
+            let emailExistsAuthWrapper = await AuthenticableWrapper.findOne({ student: emailExistsStudent._id });
+            if (emailExistsAuthWrapper) {
+                return emailExistsAuthWrapper.schema.methods.updatePassword(req, res);
+            }
+
+            return res.status(400).json('Estudiante no tiene cuenta');
+        }
+
+        return res.status(400).json('Correo no existe');
+
+    }
+
+        
+
 }
