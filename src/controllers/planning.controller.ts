@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Planning } from "../models/planning.model";
+import { Planning } from "../models/mongo/planning.model";
 import { Activity } from "../models/activity.model";
 
 // Planning controller class

@@ -1,9 +1,9 @@
 // activity.model.ts
 
 import mongoose from 'mongoose';
-import { IComment } from './mongo/comment.model';
-import { Publisher, Subscriber } from './automation/observer.model';
-import { Visitable, MessageVisitor } from './mongo/visitor.model';
+import { IComment } from './comment.model';
+import { Publisher, Subscriber } from '../automation/observer.model';
+import { Element, MessageVisitor } from '../automation/visitor.model';
 
 // Activity types 
 // This enum contains the different types of activities that can be created
@@ -33,7 +33,7 @@ export enum ActivityModality {
 
 // Activity interface
 // This interface defines the structure of an activity
-export interface IActivity extends Document, Publisher, Visitable {
+export interface IActivity extends Publisher, Element {
     week: number,
     date: Date,
     type: ActivityType,
@@ -61,9 +61,13 @@ export interface IActivity extends Document, Publisher, Visitable {
     notifySubscribers(): void;
 }
 
+
+export interface IActivityMongo extends Document, IActivity {
+}
+
 // Activity schema 
 // This schema defines the structure of an activity
-const activitySchema = new mongoose.Schema<IActivity>({
+const activitySchema = new mongoose.Schema<IActivityMongo>({
     week: {
       type: Number,
       required: true,
@@ -133,25 +137,23 @@ const activitySchema = new mongoose.Schema<IActivity>({
     }]
 });
 
-activitySchema.methods.acceptVisitorReminder = function(reminderVisitor: MessageVisitor): void {
+activitySchema.methods.acceptVisitorRecordatorio = function(reminderVisitor: MessageVisitor): void {
     reminderVisitor.visit(this as IActivity);
-    this.notifySubscribers();
 }
 
-activitySchema.methods.acceptVisitorPublication = function(publicationVisitor: MessageVisitor): void {
+activitySchema.methods.acceptVisitorPublicacion = function(publicationVisitor: MessageVisitor): void {
     publicationVisitor.visit(this as IActivity);
-    this.notifySubscribers();
 }
 
-activitySchema.methods.subscribe = function(subscriber: Subscriber): void {
+activitySchema.methods.suscribir = function(subscriber: Subscriber): void {
     this.suscriptores.push(subscriber);
 }
 
-activitySchema.methods.unsubscribe = function(subscriber: Subscriber): void {
+activitySchema.methods.desuscribir = function(subscriber: Subscriber): void {
     this.suscriptores = this.suscriptores.filter((s: Subscriber) => s !== subscriber);
 }
 
-activitySchema.methods.notifySubscribers = function(): void {
+activitySchema.methods.notificarSuscriptores = function(): void {
     this.suscriptores.forEach((s: Subscriber) => {
         if (typeof s.update === 'function') {
             s.update(this);
