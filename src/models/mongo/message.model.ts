@@ -1,6 +1,7 @@
+// message.model.ts
+
 import mongoose, {Document} from 'mongoose';
 import { IActivity } from '../activity.model';
-
 
 export interface IMessage extends Document {
     contenido: String;

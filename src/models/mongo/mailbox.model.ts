@@ -1,6 +1,7 @@
+// mailbox.model.ts
+
 import mongoose from 'mongoose';
 import { INotificacion } from './notification.model'; 
-
 
 export interface IMailbox extends Document {
     notificaciones?: INotificacion[]
