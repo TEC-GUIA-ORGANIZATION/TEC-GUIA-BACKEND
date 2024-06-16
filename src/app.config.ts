@@ -26,5 +26,5 @@ export const AUTH = {
 }; 
 
 export const SYSTEM_DATE = {
-    date: new Date(2023, 5, 14),
+    date: new Date(),
 }

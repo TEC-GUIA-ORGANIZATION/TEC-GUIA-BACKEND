@@ -3,11 +3,13 @@
 import { IActivity } from "../activity.model";
 
 export interface Subscriber {
-    update(contexto: IActivity): void;
+    updatePublication(contexto: IActivity): void;
+    updateReminder(contexto: IActivity): void;
 }
 
 export interface Publisher {
     subscribe(subscriber: Subscriber): void;
     unsubscribe(subscriber: Subscriber): void;
-    notifySubscribers(): void;
+    notifyReminderSubscribers(): void;
+    notifyPublicationSubscribers(): void;
 }
