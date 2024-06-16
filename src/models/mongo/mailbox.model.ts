@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { INotificacion } from './notification.model';
+import { INotificacion } from './notification.model'; 
 
 
 export interface IMailbox extends Document {

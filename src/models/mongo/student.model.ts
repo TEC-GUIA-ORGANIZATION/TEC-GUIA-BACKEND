@@ -2,7 +2,7 @@
 
 import mongoose, { Document } from 'mongoose';
 import { User } from './user.model';
-import { Semester } from '../enums/semester.enum';
+import { Semester } from '../../enums/semester.enum';
 
 // Interface for the student model
 export interface IStudent extends Document {

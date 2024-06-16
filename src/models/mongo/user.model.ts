@@ -1,66 +1,89 @@
-// student-wrapper.model.ts
+// user.model.ts
 
 import mongoose, { Document } from 'mongoose';
 import { Request, Response } from 'express';
-import { Role } from '../enums/role.enum';
-import { IStudent } from '../models/student.model';
+import { IAuthenticable } from './student-wrapper.model';
+import { Campus } from '../../enums/campus.enum';
+import { Role } from '../../enums/role.enum';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { AUTH } from '../app.config';
+import { AUTH } from '../../app.config';
 
-// Authenticable interface
-// This interface is used to handle the authentication
-export interface IAuthenticable extends Document {
-    signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-    profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-}
-
-// Authenticable Wrapper interface 
-// This interface defines the structure of an authenticable wrapper
-export interface IAuthenticableWrapper extends Document, IAuthenticable {
-    student: IStudent;
+// User interface
+// This interface defines the structure of a user
+export interface IUser extends Document, IAuthenticable{
+    email: string;
     password: string;
+    name: string;
+    firstLastname: string;
+    secondLastname: string;
+    campus: string;
+    photo: string;
     rol: string;
     encryptPassword(password: string): Promise<string>;
     validatePassword(password: string): Promise<boolean>;
+
+    // IAuthenticable methods
     signUp(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     signIn(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
     profile(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined>;
-
 }
 
-// Authenticable Wrapper schema 
-// This schema defines the structure of an authenticable wrapper
-const AuthenticableWrapperSchema = new mongoose.Schema({
-    student: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Students',
-        required: false
+const options: { discriminatorKey: string } = { discriminatorKey: 'userType' };
+
+// User schema
+const usuarioSchema = new mongoose.Schema({
+    email: {
+        type: String,
+        required: true,
+        //match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address'], 
+        lowercase: true
     },
     password: {
         type: String,
         required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    firstLastname: {
+        type: String,
+        required: true
+    },
+    secondLastname: {
+        type: String,
+        required: true
+    },
+    campus: {
+        type: String,
+        enum: Campus,
+        required: true
+    },
+    photo: {
+        type: String,
+        required: false
     },
     rol: {
         type: String,
         enum: Role,
         required: true
     }
-});
+}, options);
 
 // Encrypt password method
-AuthenticableWrapperSchema.methods.encryptPassword = async (password: string): Promise<string> => {
+usuarioSchema.methods.encryptPassword = async (password: string): Promise<string> => {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(password, salt);
 };
 
 // Validate password method
-AuthenticableWrapperSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
+usuarioSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
     return await bcrypt.compare(password, this.password);
 }
 
 // Sign up method
-AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Response) {
+usuarioSchema.methods.signUp = async function(req: Request, res: Response) {
         
     const emailExist = await this.findOne({ email: req.body.email });
     if (emailExist) return res.status(400).json('Correo ya existe');
@@ -79,7 +102,7 @@ AuthenticableWrapperSchema.methods.signUp = async function(req: Request, res: Re
 }
 
 // Sign in method
-AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Response) {
+usuarioSchema.methods.signIn = async function(req: Request, res: Response) {
     const user = await this.findOne({ email: req.body.email });
     if (!user) return res.status(400).json('El email no es válido.');
 
@@ -97,7 +120,7 @@ AuthenticableWrapperSchema.methods.signIn = async function(req: Request, res: Re
 }
 
 // Profile method
-AuthenticableWrapperSchema.methods.profile = async function(req: Request, res: Response) {
+usuarioSchema.methods.profile = async function(req: Request, res: Response) {
     const user = await this.findById(req.userId);
     if(!user) 
         return res.status(404).json('Usuario no encontrado');
@@ -106,13 +129,17 @@ AuthenticableWrapperSchema.methods.profile = async function(req: Request, res: R
 }
 
 // Assign rol method
-AuthenticableWrapperSchema.methods.assignRol = async function(req: Request, res: Response) {
-    let newUser: IAuthenticableWrapper;
-    newUser = new AuthenticableWrapper(req.body);
+usuarioSchema.methods.assignRol = async function(req: Request, res: Response) {
+    const { GuideProfessor } = await import('./guide-professor.model');
+    const { AdminAssistant } = await import('./admin-assistant.model');
+
+    let newUser: IUser;
+    (req.body.rol === Role.PROFESOR_GUIA) 
+    ? newUser = new GuideProfessor(req.body) 
+    : newUser = new AdminAssistant(req.body);
 
     newUser.password = await newUser.encryptPassword(newUser.password);
-
     return newUser;
-}
+} 
 
-export const AuthenticableWrapper = mongoose.model<IAuthenticableWrapper>('AuthenticableWrapper', AuthenticableWrapperSchema);
+export const User = mongoose.model<IUser>('Usuarios', usuarioSchema);
