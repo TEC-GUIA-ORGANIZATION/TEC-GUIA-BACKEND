@@ -7,6 +7,6 @@ const router = Router();
 
 router.post('/signin', AuthController.signIn); // Login
 router.post('/signup', AuthController.signUp); // Register
-router.get('/profile', AuthController.validateToken, AuthController.profile); // Validation
+router.get('/profile', AuthController.validateToken); // Validation
 
 export default router;
