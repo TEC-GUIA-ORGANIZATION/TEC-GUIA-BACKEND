@@ -4,7 +4,7 @@ export interface MessageVisitor {
     visit(activities: IActivity): void;
 }
 
-export interface Element {
+export interface Visitable {
     acceptVisitorReminder(reminderVisitor: MessageVisitor): void;
     acceptVisitorPublication(publicationVisitor: MessageVisitor): void;
 }

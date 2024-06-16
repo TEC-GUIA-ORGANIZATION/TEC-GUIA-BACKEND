@@ -2,7 +2,7 @@
 
 import mongoose from "mongoose";
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
+import { User } from "../models/mongo/user.model";
 
 // User controller class
 // This class contains methods to handle the users

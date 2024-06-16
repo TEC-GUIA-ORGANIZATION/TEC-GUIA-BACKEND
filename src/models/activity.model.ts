@@ -1,9 +1,9 @@
 // activity.model.ts
 
 import mongoose from 'mongoose';
-import { IComment } from './comment.model';
-import { Publisher, Subscriber } from './observer.model';
-import { Element, MessageVisitor } from './visitor.model';
+import { IComment } from './mongo/comment.model';
+import { Publisher, Subscriber } from './automation/observer.model';
+import { Visitable, MessageVisitor } from './mongo/visitor.model';
 
 // Activity types 
 // This enum contains the different types of activities that can be created
@@ -33,7 +33,7 @@ export enum ActivityModality {
 
 // Activity interface
 // This interface defines the structure of an activity
-export interface IActivity extends Document, Publisher, Element {
+export interface IActivity {
     week: number,
     date: Date,
     type: ActivityType,
@@ -52,109 +52,4 @@ export interface IActivity extends Document, Publisher, Element {
         recordingLink: String
     },
     comments?: IComment[],
-    suscriptores: Subscriber[],
-
-    acceptVisitorReminder(reminderVisitor: MessageVisitor): void;
-    acceptVisitorPublication(publicationVisitor: MessageVisitor): void;
-    subscribe(subscriber: Subscriber): void;
-    unsubscribe(subscriber: Subscriber): void;
-    notifySubscribers(): void;
 }
-
-// Activity schema 
-// This schema defines the structure of an activity
-const activitySchema = new mongoose.Schema<IActivity>({
-    week: {
-      type: Number,
-      required: true,
-      min: 1,     
-      max: 16     
-    },
-    date: {
-      type: Date,
-      required: true,  
-    },
-    type:{
-        type: String,
-        enum: ActivityType,
-        required: true,
-    }, 
-    name: {
-        type: String,
-        required: true,
-    },
-    description: {
-        type: String,
-        required: true,
-    },
-    responsible: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
-    daysToAnnounce: {
-        type: Number,
-        required: true,
-    },
-    daysToRemember: {
-        type: Number,
-        required: true,
-    },
-    modality: {
-        type: String,
-        enum: ActivityModality,
-        required: true,
-    },
-    placeLink: {
-        type: String,
-        required: false,
-    },
-    poster: {
-        type: String,
-        required: false,
-    },
-    status: {
-        type: String,
-        enum: ActivityStatus,
-        default: ActivityStatus.PLANEADA,
-        required: true,
-    },
-    evidence: {
-        type: {
-            attendance: [String],
-            participants: [String],
-            recordingLink: String
-        },
-        required: true,
-    },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comments' }],
-    suscriptores: [{ 
-        type: mongoose.Schema.Types.Mixed, //
-        required: true,
-    }]
-});
-
-activitySchema.methods.acceptVisitorRecordatorio = function(reminderVisitor: MessageVisitor): void {
-    reminderVisitor.visit(this as IActivity);
-}
-
-activitySchema.methods.acceptVisitorPublicacion = function(publicationVisitor: MessageVisitor): void {
-    publicationVisitor.visit(this as IActivity);
-}
-
-activitySchema.methods.suscribir = function(subscriber: Subscriber): void {
-    this.suscriptores.push(subscriber);
-}
-
-activitySchema.methods.desuscribir = function(subscriber: Subscriber): void {
-    this.suscriptores = this.suscriptores.filter((s: Subscriber) => s !== subscriber);
-}
-
-activitySchema.methods.notificarSuscriptores = function(): void {
-    this.suscriptores.forEach((s: Subscriber) => {
-        if (typeof s.update === 'function') {
-            s.update(this);
-        }
-    });
-}
-
-export const Activity = mongoose.model('Actividades', activitySchema);

@@ -1,7 +1,7 @@
 // evidence.controller.ts
 
 import { Request, Response } from 'express';
-import { Activity } from '../models/activity.model';
+import { Activity } from '../models/mongo/activity.model';
 
 // Evidence controller class
 // This class contains methods to handle the evidence
