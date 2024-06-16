@@ -15,5 +15,6 @@ router.post('/upload', upload.single('file'), StudentController.saveStudentsFrom
 router.get('/download/:campus', StudentController.downloadStudentExcel);
 router.get('/current-semester', StudentController.getCurrentSemesterStudents);
 router.get('/downloadAll', StudentController.downloadAllStudentsExcel);
+router.patch('/updatePhoneNumber', StudentController.updatePhoneNumber);
 
 export default router;
