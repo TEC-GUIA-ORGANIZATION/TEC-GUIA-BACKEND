@@ -115,8 +115,7 @@ export class Program {
 
             this.visitors.forEach(visitor => {
                 // Visit the activity with the visitor
-                activity.acceptVisitorReminder(visitor);
-                activity.acceptVisitorPublication(visitor);
+                activity.accept(visitor);
             });
         });
     }
@@ -143,8 +142,7 @@ export class Program {
             if (act.id === activity.id) {
                 this.visitors.forEach(visitor => {
                     // Visit the activity with the visitor
-                    activity.acceptVisitorReminder(visitor);
-                    activity.acceptVisitorPublication(visitor);
+                    activity.accept(visitor);
                 });
                 return activity;
             }
@@ -175,8 +173,7 @@ export class Program {
         this.activities[this.activities.length - 1].subscribe(this.notificationsCenter);
         this.visitors.forEach(visitor => {
             // Visit the activity with the visitor
-            activity.acceptVisitorReminder(visitor);
-            activity.acceptVisitorPublication(visitor);
+            activity.accept(visitor);
         });
     }
 

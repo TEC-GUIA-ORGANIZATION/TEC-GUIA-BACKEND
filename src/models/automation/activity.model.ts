@@ -72,23 +72,13 @@ export class Activity implements IActivity, Publisher, Visitable {
     }
 
     /**
-     * Accept visitor reminder 
-     * This method will accept a reminder visitor 
-     * @param reminderVisitor The reminder visitor 
+     * Accept visitor
+     * This method will accept a visitor
+     * @param visitor The visitor
      * @returns void 
      **/
-    acceptVisitorReminder(reminderVisitor: MessageVisitor): void {
-        reminderVisitor.visit(this);
-    }
-
-    /**
-     * Accept visitor publication 
-     * This method will accept a publication visitor 
-     * @param publicationVisitor The publication visitor 
-     * @returns void 
-     **/
-    acceptVisitorPublication(publicationVisitor: MessageVisitor): void {
-        publicationVisitor.visit(this);
+    accept(visitor: MessageVisitor): void {
+        visitor.visit(this);
     }
 
     /**
@@ -98,6 +88,11 @@ export class Activity implements IActivity, Publisher, Visitable {
      * @returns void 
      **/
     subscribe(subscriber: Subscriber): void {
+        // Check if the subscriber is already subscribed 
+        if (this.suscriptores.includes(subscriber)) {
+            return;
+        }
+
         this.suscriptores.push(subscriber);
     }
 
