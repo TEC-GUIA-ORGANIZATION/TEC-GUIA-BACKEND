@@ -27,6 +27,11 @@ export class VisitorReminder implements MessageVisitor {
 
         const diffDays = Math.floor((activity.date.getTime() - this.context.date.getTime()) / (1000 * 3600 * 24));
 
+        // If the activity hasn't been announced yet, don't notify
+        if (diffDays > activity.daysToAnnounce) {
+            return;
+        }
+
         if (diffDays % activity.daysToRemember === 0 && diffDays > 0) {
             activity.notifyReminderSubscribers();
         }
