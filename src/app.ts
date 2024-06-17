@@ -31,11 +31,9 @@ app.listen(APP_CONFIG.APP.port, () => {
 
 // Create a new program
 const program = Program.getInstance();
-program.updateDate(APP_CONFIG.SYSTEM_DATE.date); // Update the date
 
 // Sleep for 5 seconds
 setTimeout(() => {
     // Run the program
-    console.log('Running automation program...');
-    program.run();
+    program.updateDate(APP_CONFIG.SYSTEM_DATE.date); // Update the date
 }, 5000);
