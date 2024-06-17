@@ -273,7 +273,7 @@ export class ActivitiesController {
             console.error('Error al agregar la actividad a la planificación:', error);
         }
     }
-    //quiero enviar en el body un array de atributos de actividad, crear las actividades y agregarlas a la planificación
+
     public static createMultipleActivitiesToPlanning = async (req: Request, res: Response) => {
         const { activities } = req.body;
         const activitiesIds: mongoose.Types.ObjectId[] = [];
