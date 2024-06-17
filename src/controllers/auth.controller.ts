@@ -97,7 +97,6 @@ recibe esto {
     */
     public static async updatePassword(req: Request, res: Response): Promise<Response<any, Record<string, any>> | undefined> {
         const { email, password, newPassword } = req.body;
-        console.log(email, password, newPassword);
         const emailExistsStudent = await Student.findOne({ email: email });
         const emailExistUser = await User.findOne({ email: email });
 
