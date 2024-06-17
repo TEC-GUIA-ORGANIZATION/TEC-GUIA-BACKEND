@@ -102,13 +102,9 @@ export class StudentController{
      */
     public static createStudent = async (student: IStudent): Promise<IAuthenticableWrapper | undefined> => {
         try {
+            console.log("Creating student: ", student);
             
-            const studentExist = await Student.findOne({
-                $or: [
-                    { institutionID: student.institutionID },
-                    { email: student.email }
-                ]
-            });
+            const studentExist = await Student.findOne({ institutionID: student.institutionID });
 
             if (!studentExist) {
                 const newStudent = await Student.create({
@@ -132,6 +128,7 @@ export class StudentController{
                     status: true,
                     mailbox: mailbox
                 });
+                console.log("Created Mailbox: ", mailbox);
                 
                 await newStudentWrapper.save();
                 return newStudentWrapper;
@@ -161,7 +158,6 @@ export class StudentController{
             const sheetName = workBook.SheetNames[0];
             const workSheet = workBook.Sheets[sheetName];
             const data = xlsx.utils.sheet_to_json<any>(workSheet);
-            var studentsCreated: IStudent[] = [];
             const students: any = data.map((student: any) => ({
                 name: student.name,
                 firstLastname: student.firstLastname,
@@ -174,27 +170,24 @@ export class StudentController{
                 semester: student.semester,
                 entryYear: student.entryYear,
             }));
-            for (let student of students) {
 
+            // Delete student if it already exists 
+            for (let student of students) {
+                const studentExist = await Student.findOne({ institutionID: student.institutionID });
+                if (studentExist) {
+                    await Student.findByIdAndDelete(studentExist._id);
+                    await AuthenticableWrapper.findOneAndDelete({ student: studentExist._id });
+                }
+            }
+
+            // Create new students
+            for (let student of students) {
                 const newStudent = await this.createStudent(student);
                 if (newStudent) {
-                    studentsCreated.push(newStudent.student);
                     Program.getInstance().addStudent(newStudent);
                 }
             }
-
-            const studentsToDelete=await Student.find({ campus: campus });
-            if (studentsToDelete.length > 0) {
-                for (let student of studentsToDelete) {
-                    await Student.deleteOne({ _id: student._id });
-                    await AuthenticableWrapper.deleteOne({ student: student._id });
-                }
-            }
             
-            
-            for (let student of studentsCreated) {
-                await this.createStudent(student);
-            }
             console.log("Estudiante subido adecuadamente");
             res.status(200).send('Estudiante subido adecuadamente.')
         } catch (error) {
