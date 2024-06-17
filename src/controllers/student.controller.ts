@@ -302,7 +302,6 @@ export class StudentController{
 
     public static updatePhoneNumber = async (req: Request, res: Response) => {
         const { id, phoneNumber } = req.body;
-        console.log(id, phoneNumber);
         const student = await Student.findByIdAndUpdate(id, { personalPhone: phoneNumber }, { new: true });
 
         return student ? res.status(200).json(student) : res.status(404).json({ error: 'Estudiante no encontrado' });
