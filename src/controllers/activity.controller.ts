@@ -72,7 +72,7 @@ export class ActivitiesController {
             const newActivity = new Activity(req.body);
             await newActivity.save();
 
-            await ActivitiesController.addActivityToPlanning(req.body.campus, newActivity._id);
+            await ActivitiesController.addActivityToPlanning(newActivity._id);
 
             Program.getInstance().addActivity(
                 new ActivityObject(
@@ -255,13 +255,13 @@ export class ActivitiesController {
      * @param campus - The campus of the activity
      * @param activityId - The activity ID to be added to the planning
      */
-    private static addActivityToPlanning = async (campus: string, activityId: mongoose.Types.ObjectId) => {
+    private static addActivityToPlanning = async (activityId: mongoose.Types.ObjectId) => {
         const year = new Date().getFullYear();
         const month = new Date().getMonth();
         const semester = month <= 6 ? 'primer semestre' : 'segundo semestre';
 
         try {
-            const planning = await Planning.findOne({ semester, campus, year });
+            const planning = await Planning.findOne({ semester, year });
             if (!planning) throw new Error("No se pudo encontrar la planificación para el campus y semestre especificados.");
 
             await Planning.findByIdAndUpdate(
