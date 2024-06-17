@@ -7,6 +7,5 @@ export interface MessageVisitor {
 }
 
 export interface Visitable {
-    acceptVisitorReminder(reminderVisitor: MessageVisitor): void;
-    acceptVisitorPublication(publicationVisitor: MessageVisitor): void;
+    accept(visitor: MessageVisitor): void;
 }
