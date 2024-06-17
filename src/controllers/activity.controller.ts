@@ -273,4 +273,23 @@ export class ActivitiesController {
             console.error('Error al agregar la actividad a la planificación:', error);
         }
     }
+
+    public static createMultipleActivitiesToPlanning = async (req: Request, res: Response) => {
+        const { activities } = req.body;
+        const activitiesIds: mongoose.Types.ObjectId[] = [];
+
+        try {
+            for (const activity of activities) {
+                const newActivity = new Activity(activity);
+                await newActivity.save();
+                activitiesIds.push(newActivity._id);
+                await ActivitiesController.addActivityToPlanning(newActivity._id);
+            }
+
+            res.status(201).json(activitiesIds);
+        } catch (error) {
+            HandleError(res, error, 'Error al crear las actividades');
+        }
+    }
+
 }
