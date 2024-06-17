@@ -128,6 +128,7 @@ export class Program {
      **/
     updateDate(date: Date): void {
         this.date = date;
+        console.log(`Date set to: ${date}\nUpdating program...`);
         this.run();
     }
 

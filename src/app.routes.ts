@@ -10,6 +10,7 @@ import activityRoutes from "./routes/activity.routes";
 import commentRoutes from "./routes/comment.routes";
 import evidenceRoutes from "./routes/evidence.routes";
 import notificationRoutes from "./routes/notification.routes";
+import { Program } from "./services/program.service";
 
 // Create a new router
 const router = Router();
@@ -18,6 +19,14 @@ const root = "/api/";
 // Test route
 router.get(root, (req, res) => {
     res.send("API is running...");
+});
+
+router.post(root + "time", (req, res) => {
+    const date = new Date(req.body.date);
+    Program.getInstance().updateDate(date);
+    res.status(200).json({
+        date: date
+    });
 });
 
 // Auth routes
