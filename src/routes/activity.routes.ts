@@ -14,5 +14,6 @@ router.patch('/cancel/:id', ActivitiesController.cancelActivity); // Cancel an a
 router.get('/nexActivity', ActivitiesController.getNextActivity); // Get the next upcoming activity
 router.patch('/markAsCompleted/:id', ActivitiesController.markActivityAsCompleted) // Mark an activity as completed
 router.post('/:id/poster', ActivitiesController.uploadPoster); // Upload a poster
+router.post('/addMultipleActivities', ActivitiesController.createMultipleActivitiesToPlanning); // Add multiple activities
 
 export default router;
